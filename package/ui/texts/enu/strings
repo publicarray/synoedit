@@ -1,0 +1,6 @@
+[app]
+description = "A simple text editor GUI for Synology. JavaScript editor implemented using codemirror."
+displayname = "Syno Edit"
+
+[help]
+credits = "Credits"

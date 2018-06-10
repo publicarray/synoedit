@@ -1,0 +1,2 @@
+#!/bin/sh
+$(basename "$0") >> "$SYNOPKG_TEMP_LOGFILE"
