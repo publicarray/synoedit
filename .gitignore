@@ -2,3 +2,5 @@
 *.afdesign
 *.afphoto
 *.tgz
+*.spk
+node_modules

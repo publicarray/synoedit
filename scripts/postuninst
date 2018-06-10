@@ -1,2 +1,5 @@
 #!/bin/sh
-$(basename "$0") >> "$SYNOPKG_TEMP_LOGFILE"
+"postuninst" >> "$SYNOPKG_TEMP_LOGFILE"
+# pkgindexer_del "${SYNOPKG_PKGDEST}/ui/helptoc.conf" >> "${INST_LOG}" 2>&1
+# pkgindexer_del "${SYNOPKG_PKGDEST}/ui/index.conf" >> "${INST_LOG}" 2>&1
+rm -f /usr/syno/synoman/webman/3rdparty/synoedit >> "${SYNOPKG_TEMP_LOGFILE}" 2>&1
