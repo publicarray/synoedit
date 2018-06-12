@@ -4,27 +4,44 @@
 
 set -u
 
-## Step 1 Update dependencies
-dependencies() {
-    if command -v yarn > /dev/null; then
-        yarn
-        UPDATE_LIBS="true"
-    elif command -v npm > /dev/null; then
-        npm install
-        UPDATE_LIBS="true"
+_browserify() {
+    if command -v browserify > /dev/null; then
+        browserify package/ui/js/main.js -o package/ui/js/bundle.js
     else
-        echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system."
+        echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'"
+        exit 1
+    fi
+    cp node_modules/codemirror/lib/*.css package/ui/css/
+    cp node_modules/codemirror/addon/dialog/*.css package/ui/css/
+}
+
+## Update node_modules
+update() {
+    if command -v yarn > /dev/null; then
+        yarn upgrade --latest
+    elif command -v npm > /dev/null; then
+        npm update
     fi
 
-    if [ $UPDATE_LIBS = "true" ]; then
-        if command -v browserify > /dev/null; then
-            browserify package/ui/js/main.js -o package/ui/js/bundle.js
+    _browserify
+}
+
+## Step 1 Install dependencies
+dependencies() {
+    if [ ! -d node_modules ]; then
+        if command -v yarn > /dev/null; then
+            yarn
+            UPDATE_LIBS="true"
+        elif command -v npm > /dev/null; then
+            npm install
+            UPDATE_LIBS="true"
         else
-            echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'"
-            exit 1
+            echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system."
         fi
-        cp node_modules/codemirror/lib/*.css package/ui/css/
-        cp node_modules/codemirror/addon/dialog/*.css package/ui/css/
+
+        if [ $UPDATE_LIBS = "true" ]; then
+            _browserify
+        fi
     fi
 }
 
@@ -86,7 +103,10 @@ package() {
 }
 
 CMD="${1:-""}"
-if [ "$CMD" = "dependencies" ] || [ "$CMD" = "update" ] || [ "$CMD" = "javascript" ] || [ "$CMD" = "yarn" ] || [ "$CMD" = "npm" ]; then
+if [ "$CMD" = "update" ]; then
+    update
+    exit 0
+elif [ "$CMD" = "dependencies" ] || [ "$CMD" = "javascript" ] || [ "$CMD" = "yarn" ] || [ "$CMD" = "npm" ]; then
     dependencies
     exit 0
 elif [ "$CMD" = "all" ]; then
