@@ -7,3 +7,5 @@
 node_modules
 test
 bundle.js
+codemirror.css
+package/ui/css/dialog.css
