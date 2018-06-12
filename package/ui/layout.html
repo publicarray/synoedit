@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" class="synoedit">
+    <head>
+        <meta charset="utf-8">
+        <title>{{.Title}}</title>
+        <link rel="stylesheet" type="text/css" href="/webman/3rdparty/synoedit/css/style.css">
+    </head>
+    <body>
+        <div class="message">
+            <p class="error">{{.ErrorMessage}}</p>
+            <p class="success">{{.SuccessMessage}}</p>
+        </div>
+        <div class="spinner">
+            <div class="centerBox">
+                <span class="animation">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                        <rect x="0" y="0" width="40" height="40" fill="#C8D2DD" shape-rendering="crispEdges">
+                            <animate attributeName="fill" values="#2A5790;#C8D2DD;#C8D2DD" keyTimes="0;0.25;1" dur="0.8s" repeatCount="indefinite" begin="0s" calcMode="discrete"></animate>
+                        </rect>
+                        <rect x="50" y="0" width="40" height="40" fill="#C8D2DD" shape-rendering="crispEdges">
+                            <animate attributeName="fill" values="#2A5790;#C8D2DD;#C8D2DD" keyTimes="0;0.25;1" dur="0.8s" repeatCount="indefinite" begin="0.2s" calcMode="discrete"></animate>
+                        </rect>
+                        <rect x="0" y="50" width="40" height="40" fill="#C8D2DD" shape-rendering="crispEdges">
+                            <animate attributeName="fill" values="#2A5790;#C8D2DD;#C8D2DD" keyTimes="0;0.25;1" dur="0.8s" repeatCount="indefinite" begin="0.6s" calcMode="discrete"></animate>
+                        </rect>
+                        <rect x="50" y="50" width="40" height="40" fill="#C8D2DD" shape-rendering="crispEdges">
+                            <animate attributeName="fill" values="#2A5790;#C8D2DD;#C8D2DD" keyTimes="0;0.25;1" dur="0.8s" repeatCount="indefinite" begin="0.4s" calcMode="discrete"></animate>
+                        </rect>
+                    </svg>
+                </span>
+                <p>Processing. Please wait...</p>
+            </div>
+        </div>
+        <form method="get" class="appSelector">
+            <span class="appSelect">
+                <select name="app">
+                    <option value="" selected disabled></option>
+                    {{- $CurrentApp := .CurrentApp -}}
+                    {{- range $Application := .ConfigFiles -}}
+                        {{- if eq $CurrentApp $Application.Name }}
+                    <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
+                        {{- else }}
+                    <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
+                        {{- end -}}
+                    {{- end }}
+                </select>
+            </span>
+        </form>
+        <form method="get" class="fileSelector">
+            <span class="fileSelect">
+                <select name="file">
+                    <option value="" selected></option>
+                </select>
+            </span>
+        </form>
+        <form method="post" class="action">
+            <input class="btn" type="submit" name="action" value="Cutom Action">
+        </form>
+        <form method="post" class="fileEditor">
+            <input type="hidden" name="file" value="{{.File}}">
+            <div class="fileContent">
+                <textarea name="fileContent" autocomplete="off" autofocus>{{.FileData}}</textarea>
+            </div>
+            <input class="btn primary" type="submit" value="Save">
+        </form>
+        <link rel="stylesheet" href="/webman/3rdparty/synoedit/css/codemirror.css">
+        <link rel="stylesheet" href="/webman/3rdparty/synoedit/css/dialog.css">
+        <script>
+            // FIXME: if this data becomes big enough get this data via ajax
+            var configFiles = {{ .ConfigFilesJson }}
+            configFiles = JSON.parse(configFiles)
+            console.log(configFiles)
+        </script>
+        <script src="/webman/3rdparty/synoedit/js/bundle.js"></script>
+    </body>
+</html>

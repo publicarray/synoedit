@@ -3,5 +3,6 @@
 *.afphoto
 *.tgz
 *.spk
+*.log
 node_modules
 test

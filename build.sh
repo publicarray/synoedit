@@ -8,7 +8,7 @@ _browserify() {
     if command -v browserify > /dev/null; then
         browserify package/ui/js/main.js -o package/ui/js/bundle.js
     else
-        echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'"
+        echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'" >&2
         exit 1
     fi
     cp node_modules/codemirror/lib/*.css package/ui/css/
@@ -31,17 +31,12 @@ dependencies() {
     if [ ! -d node_modules ]; then
         if command -v yarn > /dev/null; then
             yarn
-            UPDATE_LIBS="true"
         elif command -v npm > /dev/null; then
             npm install
-            UPDATE_LIBS="true"
         else
-            echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system."
+            echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system." >&2
         fi
-
-        if [ $UPDATE_LIBS = "true" ]; then
-            _browserify
-        fi
+        _browserify
     fi
 }
 
@@ -67,8 +62,18 @@ compile() {
             env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
         fi
     else
-        echo "go is missing. Install golang before trying again. This software doesn't compile itself!"
+        echo "go is missing. Install golang before trying again. This software doesn't compile itself!" >&2
         echo "https://golang.org/"
+        exit 1
+    fi
+}
+
+compress() { # not recommended, slows down launch time ~0.8s
+    if command -v upx > /dev/null; then
+        upx package/ui/index.cgi
+        # upx --brute package/ui/index.cgi # slow
+    else
+        echo "upx not found. This option requires upx. 'brew insall upx'" >&2
         exit 1
     fi
 }
@@ -95,6 +100,7 @@ package() {
         --exclude='.DS_Store' \
         --exclude='yarn.lock' \
         --exclude='package.json' \
+        --exclude='ui/js/main.js' \
         --exclude='package' \
         --exclude='*.sh' \
         --exclude='*.spk' \
@@ -103,21 +109,21 @@ package() {
 }
 
 CMD="${1:-""}"
-if [ "$CMD" = "update" ]; then
+BUILD_ARCH="${2:-""}"
+if [ "$CMD" = "compress" ]; then
+    compress
+elif [ "$CMD" = "update" ]; then
     update
-    exit 0
 elif [ "$CMD" = "dependencies" ] || [ "$CMD" = "javascript" ] || [ "$CMD" = "yarn" ] || [ "$CMD" = "npm" ]; then
     dependencies
-    exit 0
 elif [ "$CMD" = "all" ]; then
+    _browserify
     compileAll
-    exit 0
+    compile
 elif [ "$CMD" = "compile" ]; then
-    compile "$2"
-    exit 0
+    compile "$BUILD_ARCH"
 elif [ "$CMD" = "package" ]; then
     package
-    exit 0
 else
     dependencies
     compile

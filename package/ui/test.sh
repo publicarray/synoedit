@@ -8,33 +8,16 @@ urlencode() {
 }
 
 # ---------------------------------------------------------------------------
-
-setup() {
-    mkdir -p test/dnscrypt-proxy/target/var
-    #ln -sf $(pwd)/../../work-*/install/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy test/bin/dnscrypt-proxy
-    # ln -sf $(which dnscrypt-proxy) test/bin/dnscrypt-proxy
-#     cp ../../work-*/install/var/packages/dnscrypt-proxy/target/example-* test/var/
-#     for file in test/var/example-*; do
-#         mv "${file}" "${file//example-/}"
-#     done
-
-    # wget -t 3 -O test/var/generate-domains-blacklist.py \
-        # --https-only https://raw.githubusercontent.com/jedisct1/dnscrypt-proxy/master/utils/generate-domains-blacklists/generate-domains-blacklist.py
-#     wget -t 3 -O test/var/domains-blacklist.conf \
-#         --https-only https://raw.githubusercontent.com/jedisct1/dnscrypt-proxy/master/utils/generate-domains-blacklists/domains-blacklist.conf
-    touch test/dnscrypt-proxy/target/var/domains-whitelist.txt
-#     touch test/var/domains-time-restricted.txt
-#     touch test/var/domains-blacklist-local-additions.txt
-}
-
 fixLinks() {
     sed -i '' -e "s@/webman/3rdparty/synoedit/@../@" $1
 }
 
 if [ ! -d test ]; then
     echo "Preparing test folder.."
-    setup
+    mkdir -p test/dnscrypt-proxy/target/var
 fi
+
+echo "example.com" > test/dnscrypt-proxy/target/var/domains-whitelist.txt
 
 ## lint
 # gofmt -s -w cgi.go
@@ -42,9 +25,6 @@ fi
 ## build
 # go get github.com/BurntSushi/toml
 # go build -ldflags "-s -w" -o index.cgi -- *.go
-
-# compress
-# upx --brute index.cgi
 
 ## test index.html
 export REQUEST_METHOD=GET
@@ -59,18 +39,19 @@ export QUERY_STRING="ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt"
 ./index.cgi --dev | tail -n +4 > test/file.html
 fixLinks test/file.html
 
-# export REQUEST_METHOD=POST
-# data="$(urlencode "$(cat test/var/dnscrypt-proxy.toml)")"
-# echo "$data" > post.html
+export REQUEST_METHOD=GET
+export QUERY_STRING="app=dnscrypt-proxy&file=domains-whitelist.txt"
+./index.cgi --dev | tail -n +4 > test/file2.html
+fixLinks test/file2.html
+
+export REQUEST_METHOD=POST
+# data="$(urlencode "$(cat test/dnscrypt-proxy/target/var/domains-whitelist.txt)")"
+data="$(urlencode "google.com")"
+# echo "$data" > post.txt
 
 # echo "ListenAddresses=0.0.0.0%3A1053+&ServerNames=cloudflare+google+ " | ./index.cgi --dev
-# echo "file=config&fileContent=$data" | ./index.cgi --dev | tail -n +4 > test/post.html
-# fixLinks test/post.html
+echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data" | ./index.cgi --dev | tail -n +4 > test/post.html
+fixLinks test/post.html
 
-# export REQUEST_METHOD=GET
-# export QUERY_STRING=file=blacklist
-# ./index.cgi --dev | tail -n +4 > test/get.html
-# fixLinks test/get.html
-
-# export REQUEST_METHOD=POST
-# echo "generateBlacklist=true" | ./index.cgi --dev > test/generateBlacklist.html
+export REQUEST_METHOD=POST
+echo "action=true" | ./index.cgi --dev > test/action.html
