@@ -111,7 +111,7 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		rootDir = pwd + "/test"
+		rootDir = pwd + "/test/"
 	} else { // production environment
 		auth()
 		rootDir = "/var/packages/"

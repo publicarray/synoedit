@@ -28,7 +28,7 @@ func NewHttpResponse(statusCode int, statusMessage string) *HttpResponse {
 // Print http response to stdout
 func (httpResponse *HttpResponse) print(str ...string) {
 	fmt.Println(httpResponse.Status + httpResponse.ContentType)
-	fmt.Println(strings.Join(str, "<br>"))
+	fmt.Println(strings.Join(str, " "))
 	os.Exit(0)
 }
 
@@ -36,18 +36,18 @@ func (httpResponse *HttpResponse) print(str ...string) {
 
 // Exit program with a HTTP Internal Error status code and a message (dump and die)
 func logError(str ...string) {
-	NewHttpResponse(500, "Internal server error").print(strings.Join(str, "<br>"))
+	NewHttpResponse(500, "Internal server error").print(strings.Join(str, " "))
 	os.Exit(0)
 }
 
 // Exit program with a HTTP Unauthorized status code and a message (dump and die)
 func logUnauthorised(str ...string) {
-	NewHttpResponse(401, "Unauthorized").print(strings.Join(str, "<br>"))
+	NewHttpResponse(401, "Unauthorized").print(strings.Join(str, " "))
 	os.Exit(0)
 }
 
 // Exit program with a HTTP Not Found status code
 func notFound(str ...string) {
-	NewHttpResponse(404, "Not Found").print(strings.Join(str, "<br>"))
+	NewHttpResponse(404, "Not Found").print(strings.Join(str, " "))
 	os.Exit(0)
 }

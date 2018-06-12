@@ -34,7 +34,7 @@ if (typeof CodeMirror === "undefined") {
         debug("CodeMirror save event", insance)
         insance.save()
         var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value)
-        ajax('POST', 'fileContent='+textArea.value + param, function() { // insance.getTextArea().value
+        ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() { // insance.getTextArea().value
             // restart fade animation
             successMessage.style.animation = 'none';
             successMessage.offsetHeight //  trigger reflow
@@ -158,7 +158,7 @@ fileForm.addEventListener('submit', function saveForm (e) {
     debug('submit event', e)
     var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value)
     debug('params', param)
-    ajax('POST', 'fileContent='+textArea.value + param, function() {
+    ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() {
         // restart fade animation
         successMessage.style.animation = 'none';
         successMessage.offsetHeight //  trigger reflow

@@ -27,6 +27,7 @@ func NewConfigFiles() { // TODO load as yml/toml file
 	dnscryptProxyFiles := []string{
 		"dnscrypt-proxy.toml",
 		"blacklist.txt",
+		"ip-blacklist.txt",
 		"cloaking-rules.txt",
 		"forwarding-rules.txt",
 		"whitelist.txt",
@@ -35,7 +36,7 @@ func NewConfigFiles() { // TODO load as yml/toml file
 		"domains-time-restricted.txt",
 		"domains-blacklist-local-additions.txt",
 	}
-	ConfigFiles = append(ConfigFiles, NewApplication("dnscrypt-proxy", "/dnscrypt-proxy/target/var/", dnscryptProxyFiles))
+	ConfigFiles = append(ConfigFiles, NewApplication("dnscrypt-proxy", "dnscrypt-proxy/target/var/", dnscryptProxyFiles))
 
 	// add yours here
 }
