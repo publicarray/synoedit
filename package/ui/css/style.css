@@ -57,6 +57,8 @@
 
 .synoedit .error {
     color: #f00;
+    animation: 1s 6s forwards fade-out;
+    -webkit-animation: 1s 6s forwards fade-out;
 }
 
 @keyframes fade-out {

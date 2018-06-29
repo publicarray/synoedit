@@ -104,6 +104,7 @@ package() {
         --exclude='package' \
         --exclude='*.sh' \
         --exclude='*.spk' \
+        --exclude='*.log' \
         --exclude='.git' \
         -- *
 }
