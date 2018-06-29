@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "build" > /tmp/i.log
+
+case ${MakeClean} in
+       [Yy][Ee][Ss])
+               make distclean
+               ;;
+esac
+
+make ${MAKE_FLAGS} >> /tmp/i.log
