@@ -1,0 +1,27 @@
+# line endings: lf (Unix), cr or crlf (DOS/Windows)
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+
+# Remove whitespace characters preceding the end of a line
+trim_trailing_whitespace = true
+
+# Files have a blank line at the end
+insert_final_newline = true
+
+[.travis.yml]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{Make,make,Makefile,makefile,*.mk}]
+indent_style = tab
+indent_size = 4
+
+[*.go]
+indent_style = tab
+indent_size = 4
+
