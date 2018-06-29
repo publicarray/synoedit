@@ -88,9 +88,14 @@ package() {
     ## Create package.tgz
     tar cvfz package.tgz --exclude='src' --exclude='ui/test' -C package .
 
+     # arch="arm arm64 386 amd64 ppc64" ->  arm, x86, x86_64
+
     ## Create checksum
     checksum=$($md5sum package.tgz | awk '{print $1}')
     sed -i '' -e "s/checksum=.*/checksum=\"${checksum}\"/" INFO
+    # sed -i '' -e "s/arch=.*/arch=\"${ARCH}\"/" INFO
+    # pkg_get_spk_platform
+    # pkg_get_spk_family
 
     ## Create spk
     tar cpf synoedit-"$ARCH".spk \
