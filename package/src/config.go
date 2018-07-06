@@ -19,20 +19,24 @@ package main
 package main
 
 var dev *bool
+
 // root directory for packages "/var/packages/"
 var rootDir string
-// List of filepaths
+
+// Files contains a list of filepaths
 var Files = make(map[string]string)
 
+// ConfigFiles contains a list of Applications
 var ConfigFiles []Application
 
+// Application contains a name, config directory from rootDir onwards and config file names
 type Application struct {
 	Name      string
 	Directory string
 	Files     []string
 }
 
-// NewApplication creates an Application object with name, config directory from rootDir onwards , and config file names
+// NewApplication creates a new Application object with name, config directory from rootDir onwards , and config file names
 func NewApplication(name string, dir string, files []string) Application {
 	return Application{
 		Name:      name,
@@ -41,8 +45,10 @@ func NewApplication(name string, dir string, files []string) Application {
 	}
 }
 
-// NewConfigFiles creates a list of files that can be edited and belong to an Application
-func NewConfigFiles() { // TODO load as yml/toml file
+// NewConfigFiles contains a list of Applications with config file paths
+// Insert your Application here
+// TODO in the future this should be it's own file (yml or toml?)
+func NewConfigFiles() {
 	dnscryptProxyFiles := []string{
 		"dnscrypt-proxy.toml",
 		"blacklist.txt",

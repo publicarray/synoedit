@@ -24,7 +24,7 @@ import (
 	"strings"
 )
 
-// A typical HTTP response with status code, message and content type header
+// HTTPResponse contains a typical HTTP response with status code, message and a content type header
 type HTTPResponse struct {
 	statusCode  int
 	Status      string
