@@ -22,7 +22,7 @@ import (
 	"os/exec"
 )
 
-// Look for command in $PATH
+// CheckCmdExists looks for command in $PATH
 func CheckCmdExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	if err != nil {

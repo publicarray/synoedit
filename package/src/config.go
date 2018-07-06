@@ -19,7 +19,9 @@ package main
 package main
 
 var dev *bool
+// root directory for packages "/var/packages/"
 var rootDir string
+// List of filepaths
 var Files = make(map[string]string)
 
 var ConfigFiles []Application
@@ -30,6 +32,7 @@ type Application struct {
 	Files     []string
 }
 
+// NewApplication creates an Application object with name, config directory from rootDir onwards , and config file names
 func NewApplication(name string, dir string, files []string) Application {
 	return Application{
 		Name:      name,
@@ -38,6 +41,7 @@ func NewApplication(name string, dir string, files []string) Application {
 	}
 }
 
+// NewConfigFiles creates a list of files that can be edited and belong to an Application
 func NewConfigFiles() { // TODO load as yml/toml file
 	dnscryptProxyFiles := []string{
 		"dnscrypt-proxy.toml",
@@ -56,6 +60,7 @@ func NewConfigFiles() { // TODO load as yml/toml file
 	// add yours here
 }
 
+// GetFilePath returns the complete file path given the App and file name
 func GetFilePath(appName string, fileName string) string {
 	for _, app := range ConfigFiles {
 		if app.Name == appName {

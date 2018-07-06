@@ -23,7 +23,7 @@ import (
 	"os"
 )
 
-// Return true if the file path exists.
+// FileExists returns true if the file path exists.
 func FileExists(file string) bool {
 	_, err := os.Stat(file)
 	if err != nil {
@@ -35,7 +35,7 @@ func FileExists(file string) bool {
 	return true
 }
 
-// Read file from filepath and return the data as a string
+// ReadFile reads the contents as a string, given the filepath
 func ReadFile(file string) string {
 	if FileExists(file) {
 		data, err := ioutil.ReadFile(file)
@@ -44,20 +44,12 @@ func ReadFile(file string) string {
 		}
 		return string(data)
 
-	} else {
-		notFound("file not found:", file)
-
-		// // try to create the missing file
-		// newFile, err := os.Create(file)
-		// if err != nil {
-		// 	notFound(err.Error())
-		// }
-		// newFile.Close()
 	}
+	notFound("file not found:", file)
 	return ""
 }
 
-// Save file content (data) to the approved file path (fileKey)
+// SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
 	err := ioutil.WriteFile(file+".tmp", []byte(data), 0644)
 	if err != nil {

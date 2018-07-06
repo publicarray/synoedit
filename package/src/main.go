@@ -37,7 +37,7 @@ type Page struct {
 	File            string
 	CurrentApp      string
 	ConfigFiles     []Application
-	ConfigFilesJson string
+	ConfigFilesJSON string
 }
 
 // https://stackoverflow.com/questions/44675087/golang-template-variable-isset
@@ -66,7 +66,7 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 		logError(err.Error())
 	}
 
-	configFilesJson, err := json.Marshal(ConfigFiles)
+	configFilesJSON, err := json.Marshal(ConfigFiles)
 	if err != nil {
 		logError(err.Error())
 	}
@@ -75,7 +75,7 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 	page.CurrentApp = "dnscrypt-proxy"
 	page.FileData = fileData
 	page.ConfigFiles = ConfigFiles
-	page.ConfigFilesJson = string(configFilesJson)
+	page.ConfigFilesJSON = string(configFilesJSON)
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
 	fmt.Println("Status: 200 OK\nContent-Type: text/html; charset=utf-8\n")
@@ -156,18 +156,12 @@ func main() {
 				fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
 				fmt.Println("File saved successfully!")
 				return
-			} else {
-				renderHTML(fileData, "File saved successfully!", "") // not complete
-				return
 			}
-			// } else if action != "" {
-			// customAction()
-			// fmt.Println("Status: 200 OK\nContent-Type: text/plain; charset=utf-8\n")
-			// os.Exit(0)
+			renderHTML(fileData, "File saved successfully!", "") // not complete
+			return
 		}
 		logError("No valid data submitted.")
 		return
-		// renderHTML("", "", "No valid data submitted.")
 	}
 
 	if method == "GET" { // GET
@@ -183,9 +177,9 @@ func main() {
 			fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
 			fmt.Println(fileData)
 			return
-		} else { // respond with full html
-			renderHTML(fileData, "", "") // not complete
 		}
+		// else respond with full html
+		renderHTML(fileData, "", "") // not complete
 	}
 
 	renderHTML("", "", "")
