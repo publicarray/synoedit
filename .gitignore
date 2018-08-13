@@ -4,8 +4,14 @@
 *.tgz
 *.spk
 *.log
+# npm dependencies
 node_modules
+# test output directory
 test
+# bundled java-script
 bundle.js
+# copied codemirror files
 codemirror.css
 package/ui/css/dialog.css
+# go dep
+package/pkg
