@@ -1,5 +1,12 @@
 {
   "dependencies": {
-    "codemirror": "^5.38.0"
-  }
+    "codemirror": "^5.39.2"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.2"
+  },
+  "name": "synoedit",
+  "repository": "https://github.com/publicarray/synoedit.git",
+  "author": "Sebastian Schmidt <@publicarray>",
+  "license": "GPL-3.0-only"
 }
