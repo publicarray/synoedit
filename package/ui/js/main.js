@@ -102,12 +102,15 @@ function toggleSpinner () {
 }
 
 function getFiles (appName) {
-        for (var i = configFiles.length - 1; i >= 0; i--) {
-        if (configFiles[i].Name === appName) {
-            return configFiles[i].Files
-        }
-        return []
-    }
+    //object
+    return configFiles[appName].Files || []
+    //array
+    // for (var i = configFiles.length - 1; i >= 0; i--) {
+    //     if (configFiles[i].Name === appName) {
+    //         return configFiles[i].Files
+    //     }
+    //     return []
+    // }
 }
 
 appSelector.addEventListener('change', function(e) {

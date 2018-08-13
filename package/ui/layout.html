@@ -36,8 +36,8 @@
                 <select name="app">
                     <option value="" selected disabled></option>
                     {{- $CurrentApp := .CurrentApp -}}
-                    {{- range $Application := .ConfigFiles -}}
-                        {{- if eq $CurrentApp $Application.Name }}
+                    {{- range $key, $Application := .Applications -}}
+                        {{- if eq $CurrentApp $key }}
                     <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
                         {{- else }}
                     <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
@@ -66,8 +66,8 @@
         <link rel="stylesheet" href="/webman/3rdparty/synoedit/css/dialog.css">
         <script>
             // FIXME: if this data becomes big enough get this data via ajax
-            var configFiles = {{ .ConfigFilesJson }}
-            configFiles = JSON.parse(configFiles)
+            var configFiles = {{ .Applications }}
+            // configFiles = JSON.parse(configFiles)
             console.log(configFiles)
         </script>
         <script src="/webman/3rdparty/synoedit/js/bundle.js"></script>

@@ -1,0 +1,18 @@
+[App."dnscrypt-proxy"]
+
+name = 'dnscrypt-proxy'
+
+directory = 'dnscrypt-proxy/target/var/'
+
+files = [
+    'dnscrypt-proxy.toml',
+    'blacklist.txt',
+    'ip-blacklist.txt',
+    'cloaking-rules.txt',
+    'forwarding-rules.txt',
+    'whitelist.txt',
+    'domains-blacklist.conf',
+    'domains-whitelist.txt',
+    'domains-time-restricted.txt',
+    'domains-blacklist-local-additions.txt'
+]

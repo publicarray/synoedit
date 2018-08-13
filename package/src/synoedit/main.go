@@ -25,19 +25,24 @@ import (
 	"net/url"
 	"os"
 	// "reflect"
-	"encoding/json"
+	// "encoding/json"
+)
+
+const (
+	AppVersion            = "0.0.0"
+	DefaultConfigFileName = "synoedit.toml"
 )
 
 // Page contains the data that is passed to the template (layout.html)
 type Page struct {
-	Title           string
-	FileData        string
-	ErrorMessage    string
-	SuccessMessage  string
-	File            string
-	CurrentApp      string
-	ConfigFiles     []Application
-	ConfigFilesJSON string
+	Title          string
+	FileData       string
+	ErrorMessage   string
+	SuccessMessage string
+	File           string
+	CurrentApp     string
+	Applications   map[string]ApplicationConfig
+	// ConfigFilesJSON string
 }
 
 // https://stackoverflow.com/questions/44675087/golang-template-variable-isset
@@ -66,19 +71,20 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 		logError(err.Error())
 	}
 
-	configFilesJSON, err := json.Marshal(ConfigFiles)
-	if err != nil {
-		logError(err.Error())
-	}
+	// configFilesJSON, err := json.Marshal(config.Applications)
+	// if err != nil {
+	// 	logError(err.Error())
+	// }
 	page.Title = "Syno Edit"
 	page.File = ""
 	page.CurrentApp = "dnscrypt-proxy"
 	page.FileData = fileData
-	page.ConfigFiles = ConfigFiles
-	page.ConfigFilesJSON = string(configFilesJSON)
+	page.Applications = config.Applications
+	// page.ConfigFilesJSON = string(configFilesJSON)
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
-	fmt.Println("Status: 200 OK\nContent-Type: text/html; charset=utf-8\n")
+	fmt.Println("Status: 200 OK\nContent-Type: text/html; charset=utf-8\nServer: synoedit", AppVersion)
+	fmt.Println()
 	err = tmpl.Execute(os.Stdout, page)
 	if err != nil {
 		logError(err.Error())
@@ -117,7 +123,14 @@ func main() {
 	// worry about csrf
 
 	dev = flag.Bool("dev", false, "Turns Authentication checks off")
+	configFile := flag.String("config", DefaultConfigFileName, "Path to the configuration file")
 	flag.Parse()
+
+	if err := ConfigLoad(configFile); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+		// dlog.Fatal(err)
+	}
 
 	if *dev { // test environment
 		pwd, err := os.Getwd()
@@ -131,7 +144,7 @@ func main() {
 		rootDir = "/var/packages/"
 	}
 
-	NewConfigFiles()
+	// NewConfigFiles()
 
 	// Http
 	method := os.Getenv("REQUEST_METHOD")

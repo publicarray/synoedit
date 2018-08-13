@@ -4,9 +4,28 @@
 
 set -u
 
+usage() {
+    echo "Usage:  $0 command"
+    echo
+    echo "Commands:"
+    echo "  compress       compresses compiled binary with upx"
+    echo "  update         update dependencies with yarn or npm"
+    echo "  dependencies   installs dependencies and bundles them through browserify"
+    echo "  all            Runs browserify and Compiles go project for all architectures"
+    echo "  compile        compile go project"
+    echo "  package        create spk"
+    echo "  dev            runs '_browserify', 'compile' and 'package' commands"
+    echo ""
+}
+
 _browserify() {
+    # A dump function to run browserify
     if command -v browserify > /dev/null; then
         browserify package/ui/js/main.js -o package/ui/js/bundle.js
+    elif command -v yarn > /dev/null && yarn list 2> /dev/null | grep -q browserify; then
+        yarn browserify package/ui/js/main.js -o package/ui/js/bundle.js
+    elif command -v npm > /dev/null; then
+        npm run browserify package/ui/js/main.js -o package/ui/js/bundle.js
     else
         echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'" >&2
         exit 1
@@ -22,8 +41,15 @@ update() {
     elif command -v npm > /dev/null; then
         npm update
     fi
-
     _browserify
+
+    if command -v dep > /dev/null; then
+        cd package || exit
+        export GOPATH=$PWD
+        cd src/synoedit || exit
+        dep ensure -update
+        cd ../../../ || exit
+    fi
 }
 
 ## Step 1 Install dependencies
@@ -37,6 +63,17 @@ dependencies() {
             echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system." >&2
         fi
         _browserify
+    fi
+    if [ ! -d package/src/synoedit/vendor ]; then
+        if command -v dep > /dev/null; then
+            cd package || exit
+            export GOPATH=$PWD
+            cd src/synoedit || exit
+            dep ensure
+            cd ../../../ || exit
+        else
+            echo "dep (https://github.com/golang/dep) is needed for dependency management. Try brew install dep if your on macOS"
+        fi
     fi
 }
 
@@ -55,12 +92,18 @@ compileAll() {
 compile() {
     ARCH="${1:-""}"
     if command -v go > /dev/null; then
-        gofmt -s -w -- package/src/*.go
+        gofmt -s -w -- package/src/synoedit/*.go
+        cd package || exit
+        export GOPATH=$PWD
+        cd src/synoedit || exit
         if [ -z "$ARCH" ]; then
-            go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
+            go build -ldflags="-s -w" -o ../../ui/index.cgi
+            # go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/synoedit/*.go
         else
-            env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
+            # env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
+            env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o ../../ui/index.cgi
         fi
+        cd ../../.. || edit
     else
         echo "go is missing. Install golang before trying again. This software doesn't compile itself!" >&2
         echo "https://golang.org/"
@@ -127,11 +170,14 @@ elif [ "$CMD" = "all" ]; then
     compileAll
     compile
 elif [ "$CMD" = "compile" ]; then
+    _browserify
     compile "$BUILD_ARCH"
 elif [ "$CMD" = "package" ]; then
     package
-else
-    dependencies
+elif [ "$CMD" = "dev" ]; then
+    _browserify
     compile
     package
+else
+    usage
 fi
