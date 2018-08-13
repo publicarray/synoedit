@@ -1,9 +1,14 @@
 [App."dnscrypt-proxy"]
 
+# This field is deprecated in favour of the map[string]
 name = 'dnscrypt-proxy'
 
+# The path where the configuration files live
+# root folder is '/var/packages/'
 directory = 'dnscrypt-proxy/target/var/'
 
+# List of configuration files
+# The final file path is '/var/packages/' + directory + files[i]
 files = [
     'dnscrypt-proxy.toml',
     'blacklist.txt',

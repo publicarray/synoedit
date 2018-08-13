@@ -36,11 +36,11 @@
                 <select name="app">
                     <option value="" selected disabled></option>
                     {{- $CurrentApp := .CurrentApp -}}
-                    {{- range $key, $Application := .Applications -}}
-                        {{- if eq $CurrentApp $key }}
-                    <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
+                    {{- range $AppName, $Application := .Applications -}}
+                        {{- if eq $CurrentApp $AppName }}
+                    <option value="{{ $AppName }}">{{ $AppName }}</option>
                         {{- else }}
-                    <option value="{{ $Application.Name }}">{{ $Application.Name }}</option>
+                    <option value="{{ $AppName }}">{{ $AppName }}</option>
                         {{- end -}}
                     {{- end }}
                 </select>
