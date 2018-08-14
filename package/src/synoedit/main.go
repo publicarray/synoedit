@@ -29,8 +29,10 @@ import (
 )
 
 const (
-	AppVersion            = "0.0.0"
-	DefaultConfigFileName = "synoedit.toml"
+	AppVersion = "0.0.0"
+	// DefaultConfigFileName = "synoedit.toml"
+	DefaultDatabaseFileName       = "database.toml"
+	DefaultDatabaseSHA256Checksum = "cfce449237b2c69a6848545567f1cc33b7df9787702b2493060bc22629363b65"
 )
 
 // Page contains the data that is passed to the template (layout.html)
@@ -123,7 +125,7 @@ func main() {
 	// worry about csrf
 
 	dev = flag.Bool("dev", false, "Turns Authentication checks off")
-	configFile := flag.String("config", DefaultConfigFileName, "Path to the configuration file")
+	configFile := flag.String("config", DefaultDatabaseFileName, "Path to the configuration file")
 	flag.Parse()
 
 	if err := ConfigLoad(configFile); err != nil {

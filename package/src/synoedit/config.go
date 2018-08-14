@@ -18,8 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"io"
 	"os"
 	"path"
 	"path/filepath"
@@ -76,6 +79,23 @@ func GetFilePath(appName string, fileName string) string {
 	return "" // exit early (app not found)
 }
 
+func verifyFile(filePath string, sha256checksum string) bool {
+	file, err := os.Open(filePath)
+	if err != nil {
+		logError("Unable open file")
+	}
+	defer file.Close()
+
+	hash := sha256.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		logError("Unable read file")
+	}
+	checksum := hash.Sum(nil)
+	// fmt.Printf("%s\n", sha256checksum)
+	// fmt.Printf("%x\n", checksum)
+	return hex.EncodeToString(checksum) == sha256checksum
+}
+
 // borrowed from dnscrypt-proxy
 func ConfigLoad(configFile *string) error {
 	foundConfigFile, err := findConfigFile(configFile)
@@ -83,6 +103,11 @@ func ConfigLoad(configFile *string) error {
 		logError("Unable to load the configuration file")
 		return err
 	}
+	// This is to prevent from modifying unapproved files.
+	if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
+		logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
+	}
+
 	config = newConfig()
 	md, err := toml.DecodeFile(foundConfigFile, &config)
 	if err != nil {
