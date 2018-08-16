@@ -85,10 +85,10 @@ func ConfigLoad(configFile *string) error {
 		logError("Unable to load the configuration file")
 		return err
 	}
-	// // This is to prevent from modifying unapproved files.
-	// if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
-	// 	logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
-	// }
+	// This is to prevent from modifying unapproved files.
+	if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
+		logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
+	}
 
 	config = newConfig()
 	md, err := toml.DecodeFile(foundConfigFile, &config)

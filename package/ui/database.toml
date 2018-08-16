@@ -22,8 +22,8 @@ files = [
 [app."dnscrypt-proxy".action]
     button_label = "Generate Blacklist"
     exec = "python"
-    dir = "/var/packages/dnscrypt-proxy/target/var"
     args = ["/var/packages/dnscrypt-proxy/target/var/generate-domains-blacklist.py"]
+    dir = "/var/packages/dnscrypt-proxy/target/var"
     out-file = "/var/packages/dnscrypt-proxy/target/var/blacklist.txt"
 # [app."dnscrypt-proxy".action]
 #     button_label = "Check config file"
