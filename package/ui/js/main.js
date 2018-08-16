@@ -22,11 +22,11 @@ var textArea = document.querySelectorAll('.synoedit .fileContent textarea')[0]
 var spinner = document.querySelectorAll('.synoedit .spinner')[0]
 var successMessage = document.querySelectorAll('.synoedit .success')[0]
 var errorMessage = document.querySelectorAll('.synoedit .error')[0]
-var actionBtn = document.querySelectorAll('.synoedit .action')[0]
+var actionForm = document.querySelectorAll('.synoedit .action')[0]
+var actionBtn = document.querySelectorAll('.synoedit .action .btn')[0]
 var appSelector = document.querySelectorAll('.synoedit .appSelect select')[0]
 var fileSelector = document.querySelectorAll('.synoedit .fileSelect select')[0]
 var fileForm = document.querySelectorAll('.synoedit .fileEditor')[0]
-
 if (typeof CodeMirror === "undefined") {
     textArea.style.opacity = 1
 } else {
@@ -102,18 +102,15 @@ function toggleSpinner () {
 }
 
 function getFiles (appName) {
-    //object
     return configFiles[appName].Files || []
-    //array
-    // for (var i = configFiles.length - 1; i >= 0; i--) {
-    //     if (configFiles[i].Name === appName) {
-    //         return configFiles[i].Files
-    //     }
-    //     return []
-    // }
+}
+
+function getActionLabel (appName) {
+   return configFiles[appName].Action.Label || ""
 }
 
 appSelector.addEventListener('change', function(e) {
+    var appName = e.target.value;
     // remove all items
     while (fileSelector.hasChildNodes()) {
         fileSelector.removeChild(fileSelector.lastChild)
@@ -124,11 +121,23 @@ appSelector.addEventListener('change', function(e) {
     fileSelector.appendChild(option)
 
     // populate options
-    var files = getFiles(e.target.value)
+    var files = getFiles(appName)
     debug(files)
     for (var i = files.length - 1; i >= 0; i--) {
         var option = new Option(files[i], files[i])
         fileSelector.appendChild(option)
+    }
+
+    // update Action button label
+    var actionBtnLabel = getActionLabel(appName)
+    debug(actionBtnLabel)
+    if (actionBtnLabel != "") {
+        actionBtn.value = actionBtnLabel
+        actionBtn.style.display = 'block'
+        actionBtn.disabled = false
+    } else {
+        actionBtn.style.display = 'none'
+        actionBtn.disabled = true
     }
 }, false)
 
@@ -142,12 +151,14 @@ fileSelector.addEventListener('change', function(e) {
             textArea.value = r.responseText
         }
     })
-
 }, false)
 
-actionBtn.addEventListener('submit', function(e) {
+actionForm.addEventListener('submit', function(e) {
     if (e.preventDefault) e.preventDefault();
-    ajax('POST', 'action=true', function () {
+    debug('action event', e)
+    var param = addParameter('app', appSelector.value)
+    debug('params', param)
+    ajax('POST', 'action=true' + param, function () {
         // restart fade animation
         successMessage.style.animation = 'none';
         successMessage.offsetHeight //  trigger reflow
@@ -158,7 +169,7 @@ actionBtn.addEventListener('submit', function(e) {
 
 fileForm.addEventListener('submit', function saveForm (e) {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
-    debug('submit event', e)
+    debug('file content submit event', e)
     var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value)
     debug('params', param)
     ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() {

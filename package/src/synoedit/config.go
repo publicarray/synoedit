@@ -29,8 +29,6 @@ import (
 )
 
 type Config struct {
-	// Applications ApplicationConfig `toml:"app"`
-	// Applications []ApplicationConfig `toml:"app"`
 	Applications map[string]ApplicationConfig `toml:"app"`
 }
 
@@ -45,9 +43,11 @@ type ApplicationConfig struct {
 }
 
 type ActionConfig struct {
-	Label *string  `toml:"button_label"`
-	Exec  *string  `toml:"exec"`
-	Args  []string `toml:"args"`
+	Label      *string  `toml:"button_label"`
+	Exec       *string  `toml:"exec"`
+	Args       []string `toml:"args"`
+	Dir        *string  `toml:"dir"`
+	OutputFile *string  `toml:"out-file"`
 }
 
 func newConfig() Config {
@@ -60,24 +60,6 @@ var config Config
 
 // root directory for packages "/var/packages/"
 var rootDir string
-
-// GetFilePath returns the complete file path given the App and file name
-func GetFilePath(appName string, fileName string) string {
-	for _, app := range config.Applications {
-		if *app.Name == appName {
-			// verify the fileName is allowed
-			for _, file := range app.Files {
-				if file == fileName {
-					return rootDir + *app.Directory + fileName
-				}
-			}
-			logError("File not found in App configuration!")
-			return "" // exit early (file not found)
-		}
-	}
-	logError("App not found in configuration!")
-	return "" // exit early (app not found)
-}
 
 func verifyFile(filePath string, sha256checksum string) bool {
 	file, err := os.Open(filePath)
@@ -103,10 +85,10 @@ func ConfigLoad(configFile *string) error {
 		logError("Unable to load the configuration file")
 		return err
 	}
-	// This is to prevent from modifying unapproved files.
-	if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
-		logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
-	}
+	// // This is to prevent from modifying unapproved files.
+	// if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
+	// 	logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
+	// }
 
 	config = newConfig()
 	md, err := toml.DecodeFile(foundConfigFile, &config)

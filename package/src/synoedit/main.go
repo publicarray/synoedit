@@ -24,15 +24,13 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
-	// "reflect"
-	// "encoding/json"
 )
 
 const (
 	AppVersion = "0.0.0"
 	// DefaultConfigFileName = "synoedit.toml"
 	DefaultDatabaseFileName       = "database.toml"
-	DefaultDatabaseSHA256Checksum = "cfce449237b2c69a6848545567f1cc33b7df9787702b2493060bc22629363b65"
+	DefaultDatabaseSHA256Checksum = "44831c0329072ae7c538625310c9f8117c5913441e693c11a98ec3e07956599c"
 )
 
 // Page contains the data that is passed to the template (layout.html)
@@ -44,7 +42,6 @@ type Page struct {
 	File           string
 	CurrentApp     string
 	Applications   map[string]ApplicationConfig
-	// ConfigFilesJSON string
 }
 
 // https://stackoverflow.com/questions/44675087/golang-template-variable-isset
@@ -62,27 +59,17 @@ type Page struct {
 // Return HTML from layout.html.
 func renderHTML(fileData string, successMessage string, errorMessage string) {
 	var page Page
-	// fileData := ""
-
-	// tmpl := template.Must(template.New("index").Funcs(template.FuncMap{
-	// 	"isset": templateIsset,
-	// }).ParseFiles("layout.html"))
 
 	tmpl, err := template.ParseFiles("layout.html")
 	if err != nil {
 		logError(err.Error())
 	}
 
-	// configFilesJSON, err := json.Marshal(config.Applications)
-	// if err != nil {
-	// 	logError(err.Error())
-	// }
 	page.Title = "Syno Edit"
 	page.File = ""
 	page.CurrentApp = "dnscrypt-proxy"
 	page.FileData = fileData
 	page.Applications = config.Applications
-	// page.ConfigFilesJSON = string(configFilesJSON)
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
 	fmt.Println("Status: 200 OK\nContent-Type: text/html; charset=utf-8\nServer: synoedit", AppVersion)
@@ -146,8 +133,6 @@ func main() {
 		rootDir = "/var/packages/"
 	}
 
-	// NewConfigFiles()
-
 	// Http
 	method := os.Getenv("REQUEST_METHOD")
 	if method == "POST" || method == "PUT" || method == "PATCH" { // POST
@@ -157,9 +142,15 @@ func main() {
 		appName := postData.Get("app")
 		fileName := postData.Get("file")
 		action := postData.Get("action")
-		if action != "" {
+		if action != "" && appName != "" {
+			output := ExecuteAction(appName)
 			fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
-			fmt.Println("Not implemented")
+			fmt.Println(output)
+
+			if ajax != "" {
+				renderHTML(fileData, "Not implemented", "")
+				return
+			}
 			return
 		}
 

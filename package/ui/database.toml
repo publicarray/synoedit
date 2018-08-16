@@ -1,7 +1,4 @@
-[App."dnscrypt-proxy"]
-
-# This field is deprecated in favour of the map[string]
-name = 'dnscrypt-proxy'
+[app."dnscrypt-proxy"]
 
 # The path where the configuration files live
 # root folder is '/var/packages/'
@@ -20,4 +17,21 @@ files = [
     'domains-whitelist.txt',
     'domains-time-restricted.txt',
     'domains-blacklist-local-additions.txt'
+]
+
+[app."dnscrypt-proxy".action]
+    button_label = "Generate Blacklist"
+    exec = "python"
+    dir = "/var/packages/dnscrypt-proxy/target/var"
+    args = ["/var/packages/dnscrypt-proxy/target/var/generate-domains-blacklist.py"]
+    out-file = "/var/packages/dnscrypt-proxy/target/var/blacklist.txt"
+# [app."dnscrypt-proxy".action]
+#     button_label = "Check config file"
+#     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
+#     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
+
+[app."example"]
+directory = 'example/target/var/'
+files = [
+    'example.toml'
 ]

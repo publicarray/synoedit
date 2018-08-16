@@ -54,4 +54,4 @@ echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data"
 fixLinks test/post.html
 
 export REQUEST_METHOD=POST
-echo "action=true" | ./index.cgi --dev > test/action.html
+echo "ajax=true&action=true&app=dnscrypt-proxy" | ./index.cgi --dev > test/action.html
