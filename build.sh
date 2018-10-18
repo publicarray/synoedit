@@ -96,12 +96,13 @@ compile() {
         cd package || exit
         export GOPATH=$PWD
         cd src/synoedit || exit
+        echo "go compiling ..."
         if [ -z "$ARCH" ]; then
             go build -ldflags="-s -w" -o ../../ui/index.cgi
             # go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/synoedit/*.go
         else
             # env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
-            env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o ../../ui/index.cgi
+            env CGO_ENABLED=0 GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o ../../ui/index.cgi
         fi
         cd ../../.. || edit
     else
@@ -129,7 +130,12 @@ package() {
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
 
     ## Create package.tgz
-    tar cvfz package.tgz --exclude='src' --exclude='ui/test' -C package .
+    tar cvfz package.tgz --exclude='src' \
+        --exclude="pkg" \
+        --exclude='ui/test' \
+        --exclude='ui/test.sh' \
+        --exclude='.DS_Store' \
+        -C package .
 
      # arch="arm arm64 386 amd64 ppc64" ->  arm, x86, x86_64
 

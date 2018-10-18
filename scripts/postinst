@@ -1,3 +1,1 @@
 #!/bin/sh
-"postinst" >> "$SYNOPKG_TEMP_LOGFILE"
-ln -s "${SYNOPKG_PKGDEST}/ui/" /usr/syno/synoman/webman/3rdparty/synoedit >> "${SYNOPKG_TEMP_LOGFILE}" 2>&1
