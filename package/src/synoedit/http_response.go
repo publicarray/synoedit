@@ -34,15 +34,15 @@ type HTTPResponse struct {
 func NewHTTPResponse(statusCode int, statusMessage string) *HTTPResponse {
 	HTTPResponse := HTTPResponse{
 		statusCode:  statusCode,
-		Status:      "Status: " + fmt.Sprintf("%v", statusCode) + " " + statusMessage + "\n",
-		ContentType: "Content-Type: text/html; charset=utf-8\n",
+		Status:      "Status: " + fmt.Sprintf("%v", statusCode) + " " + statusMessage + "\r\n",
+		ContentType: "Content-Type: text/html; charset=utf-8\r\n",
 	}
 	return &HTTPResponse
 }
 
 // Print http response to stdout
 func (HTTPResponse *HTTPResponse) print(str ...string) {
-	fmt.Println(HTTPResponse.Status + HTTPResponse.ContentType)
+	fmt.Print(HTTPResponse.Status + HTTPResponse.ContentType + "\r\n\r\n")
 	fmt.Println(strings.Join(str, " "))
 	os.Exit(0)
 }

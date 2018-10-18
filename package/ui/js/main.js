@@ -69,6 +69,7 @@ function ajax (method, data, successFunc) {
     var request = new XMLHttpRequest()
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
+            debug('ajax response', request)
             successFunc(request)
         } else {
             console.error(request.status, request.responseText)
@@ -144,7 +145,6 @@ appSelector.addEventListener('change', function(e) {
 fileSelector.addEventListener('change', function(e) {
     var param = addParameter('app', appSelector.value) + addParameter('file', e.target.value)
     ajax('GET', param, function(r) {
-        debug('response', r)
         if (typeof editor !== 'undefined') {
             editor.getDoc().setValue(r.responseText)
         } else {

@@ -72,8 +72,8 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 	page.Applications = config.Applications
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
-	fmt.Println("Status: 200 OK\nContent-Type: text/html; charset=utf-8\nServer: synoedit", AppVersion)
-	fmt.Println()
+	fmt.Print("Status: 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nServer: synoedit", AppVersion)
+	fmt.Print("\r\n\r\n")
 	err = tmpl.Execute(os.Stdout, page)
 	if err != nil {
 		logError(err.Error())
@@ -146,8 +146,8 @@ func main() {
 			output := ExecuteAction(appName)
 
 			if ajax == "true" {
-				fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
-				fmt.Println(output)
+				fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
+				fmt.Print(output)
 				return
 			}
 			renderHTML(fileData, "Not implemented", "")
@@ -159,8 +159,8 @@ func main() {
 			SaveFile(filePath, fileData)
 
 			if ajax == "true" {
-				fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
-				fmt.Println("File saved successfully!")
+				fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
+				fmt.Print("File saved successfully!")
 				return
 			}
 			renderHTML(fileData, "File saved successfully!", "") // not complete
@@ -180,8 +180,8 @@ func main() {
 
 		if ajax := readGet().Get("ajax"); ajax == "true" {
 			// expect an ajax response
-			fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
-			fmt.Println(fileData)
+			fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
+			fmt.Print(fileData)
 			return
 		}
 		// else respond with full html
