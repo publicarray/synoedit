@@ -45,6 +45,9 @@ export QUERY_STRING="app=dnscrypt-proxy&file=domains-whitelist.txt"
 fixLinks test/file2.html
 
 export REQUEST_METHOD=POST
+export CONTENT_TYPE="application/x-www-form-urlencoded"
+ # echo "jax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=google.com%0A" | wc -c
+export CONTENT_LENGTH=81
 # data="$(urlencode "$(cat test/dnscrypt-proxy/target/var/domains-whitelist.txt)")"
 data="$(urlencode "google.com")"
 # echo "$data" > post.txt
@@ -54,4 +57,7 @@ echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data"
 fixLinks test/post.html
 
 export REQUEST_METHOD=POST
-echo "ajax=true&action=true&app=dnscrypt-proxy" | ./index.cgi --dev > test/action.html
+export CONTENT_TYPE="application/x-www-form-urlencoded"
+ # echo "ajax=true&action=true&app=dnscrypt-proxy" | wc -c
+export CONTENT_LENGTH=41
+echo "ajax=true&action=true&app=dnscrypt-proxy" | ./index.cgi --dev | tail -n +5 > test/action.html

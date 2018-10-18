@@ -18,12 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"html/template"
-	"net/url"
+	"net/http/cgi"
 	"os"
+	"strings"
 )
 
 const (
@@ -44,18 +44,6 @@ type Page struct {
 	Applications   map[string]ApplicationConfig
 }
 
-// https://stackoverflow.com/questions/44675087/golang-template-variable-isset
-// func templateIsset(name string, data interface{}) bool {
-// 	v := reflect.ValueOf(data)
-// 	if v.Kind() == reflect.Ptr {
-// 		v = v.Elem()
-// 	}
-// 	if v.Kind() != reflect.Struct {
-// 		return false
-// 	}
-// 	return v.FieldByName(name).IsValid()
-// }
-
 // Return HTML from layout.html.
 func renderHTML(fileData string, successMessage string, errorMessage string) {
 	var page Page
@@ -75,50 +63,13 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 	fmt.Print(
 		"Status: 200 OK\r\n",
 		"Content-Type: text/html; charset=utf-8\r\n",
-		"Server: synoedit", AppVersion, "\r\n",
+		"Server: synoedit ", AppVersion, "\r\n",
 		"\r\n")
 	err = tmpl.Execute(os.Stdout, page)
 	if err != nil {
 		logError(err.Error())
 	}
 	os.Exit(0)
-}
-
-// Read GET parameters and return them as an Object
-func readGet() url.Values {
-	queryStr := os.Getenv("QUERY_STRING")
-	q, err := url.ParseQuery(queryStr)
-	if err != nil {
-		logError(err.Error())
-	}
-	return q
-}
-
-// Read POST parameters and return them as an Object
-func readPost() url.Values {
-	// fixme: check/generate csrf token
-	var bytes []byte
-	size := 0
-	reader := bufio.NewReader(os.Stdin)
-	for {
-		b, err := reader.ReadByte()
-		if err != nil {
-			break
-		}
-
-		bytes = append(bytes, b)
-		size++
-		if (size > 10000000) { // stop reading at 10 megabytes
-			logError("Stopped reading POST data at 10Mb. Too Much Data!" + err.Error())
-			break
-		}
-	}
-
-	q, err := url.ParseQuery(strings.TrimSpace(string(bytes)))
-	if err != nil {
-		logError(err.Error())
-	}
-	return q
 }
 
 func main() {
@@ -148,15 +99,24 @@ func main() {
 		rootDir = "/var/packages/"
 	}
 
+	// Retrieve Form Values
+	httpReqest, err := cgi.Request()
+	if err != nil {
+		logError(err.Error())
+	}
+	if err = httpReqest.ParseForm(); err != nil {
+		logError(err.Error())
+	}
+
+	ajax := strings.TrimSpace(httpReqest.FormValue("ajax"))
+	appName := strings.TrimSpace(httpReqest.FormValue("app"))
+	fileName := strings.TrimSpace(httpReqest.FormValue("file"))
+	action := strings.TrimSpace(httpReqest.FormValue("action"))
+	fileData := strings.TrimSpace(httpReqest.FormValue("fileContent"))
+
 	// Http
 	method := os.Getenv("REQUEST_METHOD")
 	if method == "POST" || method == "PUT" || method == "PATCH" { // POST
-		postData := readPost()
-		fileData := postData.Get("fileContent")
-		ajax := postData.Get("ajax")
-		appName := postData.Get("app")
-		fileName := postData.Get("file")
-		action := postData.Get("action")
 		if action != "" && appName != "" {
 			output := ExecuteAction(appName)
 
@@ -179,14 +139,11 @@ func main() {
 	}
 
 	if method == "GET" { // GET
-		var fileData = ""
-		appName := readGet().Get("app")
-		fileName := readGet().Get("file")
 		if appName != "" && fileName != "" {
 			fileData = ReadFile(GetFilePath(appName, fileName))
 		}
 
-		if ajax := readGet().Get("ajax"); ajax == "true" {
+		if ajax == "true" {
 			// expect an ajax response
 			okPlain(fileData)
 		}
