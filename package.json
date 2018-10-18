@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "codemirror": "^5.39.2"
+    "codemirror": "^5.40.2"
   },
   "devDependencies": {
-    "browserify": "^16.2.2"
+    "browserify": "^16.2.3"
   },
   "name": "synoedit",
   "repository": "https://github.com/publicarray/synoedit.git",
