@@ -31,10 +31,10 @@ func GetFilePath(appName string, fileName string) string {
 			}
 		}
 		logError("File not found in App configuration!")
-		return "" // exit early (file not found)
+		return ""
 	}
 	logError("App not found in configuration!")
-	return "" // exit early (app not found)
+	return ""
 }
 
 // Look for command in $PATH or Check that file exits

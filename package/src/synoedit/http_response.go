@@ -37,7 +37,7 @@ func NewHTTPResponse(statusCode int, statusMessage string) *HTTPResponse {
 		statusCode:  statusCode,
 		Status:      "Status: " + fmt.Sprintf("%v", statusCode) + " " + statusMessage + "\r\n",
 		Server:      "Server: synoedit " + AppVersion + "\r\n",
-		ContentType: "Content-Type: text/html; charset=utf-8\r\n",
+		ContentType: "Content-Type: text/plain; charset=utf-8\r\n",
 	}
 	return &HTTPResponse
 }
@@ -71,14 +71,15 @@ func notFound(str ...string) {
 
 // Return HTML with OK status message
 func okHTML(str ...string) {
+	okPlainRes := NewHTTPResponse(200, "OK")
+	okPlainRes.ContentType = "Content-Type: text/html; charset=utf-8;\r\n"
+	okPlainRes.print(strings.Join(str, " "))
 	NewHTTPResponse(200, "OK").print(strings.Join(str, " "))
 	os.Exit(0)
 }
 
 // Return plain text with OK status message
 func okPlain(str ...string) {
-	okPlainRes := NewHTTPResponse(200, "OK")
-	okPlainRes.ContentType = "Content-Type: text/plain;\r\n"
-	okPlainRes.print(strings.Join(str, " "))
+	NewHTTPResponse(200, "OK").print(strings.Join(str, " "))
 	os.Exit(0)
 }

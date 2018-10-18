@@ -18,10 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/url"
 	"os"
 )
@@ -72,8 +72,11 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 	page.Applications = config.Applications
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
-	fmt.Print("Status: 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nServer: synoedit", AppVersion)
-	fmt.Print("\r\n\r\n")
+	fmt.Print(
+		"Status: 200 OK\r\n",
+		"Content-Type: text/html; charset=utf-8\r\n",
+		"Server: synoedit", AppVersion, "\r\n",
+		"\r\n")
 	err = tmpl.Execute(os.Stdout, page)
 	if err != nil {
 		logError(err.Error())
@@ -92,14 +95,26 @@ func readGet() url.Values {
 }
 
 // Read POST parameters and return them as an Object
-func readPost() url.Values { // todo: stop on a max size (10mb?)
+func readPost() url.Values {
 	// fixme: check/generate csrf token
-	bytes, err := ioutil.ReadAll(os.Stdin) // if there is no data the process will block (wait)
-	if err != nil {
-		logError(err.Error())
+	var bytes []byte
+	size := 0
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		b, err := reader.ReadByte()
+		if err != nil {
+			break
+		}
+
+		bytes = append(bytes, b)
+		size++
+		if (size > 10000000) { // stop reading at 10 megabytes
+			logError("Stopped reading POST data at 10Mb. Too Much Data!" + err.Error())
+			break
+		}
 	}
 
-	q, err := url.ParseQuery(string(bytes))
+	q, err := url.ParseQuery(strings.TrimSpace(string(bytes)))
 	if err != nil {
 		logError(err.Error())
 	}
