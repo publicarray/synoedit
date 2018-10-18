@@ -22,15 +22,6 @@ import (
 	"os/exec"
 )
 
-// CheckCmdExists looks for command in $PATH
-func CheckCmdExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
-	if err != nil {
-		return false
-	}
-	return true
-}
-
 // GetFilePath returns the complete file path given the App and file name
 func GetFilePath(appName string, fileName string) string {
 	if app, exists := config.Applications[appName]; exists {
@@ -47,7 +38,7 @@ func GetFilePath(appName string, fileName string) string {
 }
 
 // Look for command in $PATH or Check that file exits
-func checkCmdExists(cmd string) bool {
+func CheckCmdExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
 		return FileExists(cmd)
@@ -59,7 +50,7 @@ func checkCmdExists(cmd string) bool {
 func ExecuteAction(appName string) string {
 	if app, exists := config.Applications[appName]; exists {
 
-		if !checkCmdExists(*app.Action.Exec) {
+		if !CheckCmdExists(*app.Action.Exec) {
 			logError("Command could not be found or is not installed!")
 		}
 

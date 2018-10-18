@@ -93,22 +93,24 @@ func auth() {
 	}
 
 	// check permissions
-	cmd = exec.Command("/usr/syno/synoman/webman/initdata.cgi") // performance hit
-	cmdOut, err := cmd.Output()
-	if err != nil {
-		logUnauthorised(err.Error())
-	}
-	cmdOut = bytes.TrimLeftFunc(cmdOut, findJSON)
+	if FileExists("/usr/syno/synoman/webman/initdata.cgi") {
+		cmd = exec.Command("/usr/syno/synoman/webman/initdata.cgi") // performance hit
+		cmdOut, err := cmd.Output()
+		if err != nil {
+			logUnauthorised(err.Error())
+		}
+		cmdOut = bytes.TrimLeftFunc(cmdOut, findJSON)
 
-	var jsonData AuthJSON
-	if err := json.Unmarshal(cmdOut, &jsonData); err != nil { // performance hit
-		logUnauthorised(err.Error())
-	}
+		var jsonData AuthJSON
+		if err := json.Unmarshal(cmdOut, &jsonData); err != nil { // performance hit
+			logUnauthorised(err.Error())
+		}
 
-	isAdmin := jsonData.Session.IsAdmin              // Session.IsAdmin:true
-	isPermitted := jsonData.AppPrivilege.IsPermitted // AppPrivilege.SYNO.SDS.DNSCryptProxy.Application:true
-	if !(isAdmin || isPermitted) {
-		notFound()
+		isAdmin := jsonData.Session.IsAdmin              // Session.IsAdmin:true
+		isPermitted := jsonData.AppPrivilege.IsPermitted // AppPrivilege.SYNO.SDS.DNSCryptProxy.Application:true
+		if !(isAdmin || isPermitted) {
+			notFound()
+		}
 	}
 
 	os.Setenv("QUERY_STRING", tempQueryEnv)

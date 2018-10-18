@@ -144,13 +144,13 @@ func main() {
 		action := postData.Get("action")
 		if action != "" && appName != "" {
 			output := ExecuteAction(appName)
-			fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
-			fmt.Println(output)
 
-			if ajax != "" {
-				renderHTML(fileData, "Not implemented", "")
+			if ajax == "true" {
+				fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
+				fmt.Println(output)
 				return
 			}
+			renderHTML(fileData, "Not implemented", "")
 			return
 		}
 
@@ -158,7 +158,7 @@ func main() {
 			filePath := GetFilePath(appName, fileName)
 			SaveFile(filePath, fileData)
 
-			if ajax != "" {
+			if ajax == "true" {
 				fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
 				fmt.Println("File saved successfully!")
 				return
@@ -178,7 +178,7 @@ func main() {
 			fileData = ReadFile(GetFilePath(appName, fileName))
 		}
 
-		if ajax := readGet().Get("ajax"); ajax != "" {
+		if ajax := readGet().Get("ajax"); ajax == "true" {
 			// expect an ajax response
 			fmt.Println("Status: 200 OK\nContent-Type: text/plain;\n")
 			fmt.Println(fileData)
