@@ -30,18 +30,18 @@ echo "example.com" > test/dnscrypt-proxy/target/var/domains-whitelist.txt
 export REQUEST_METHOD=GET
 export SERVER_PROTOCOL=HTTP/1.1
 mkdir -p test
-./index.cgi --dev | tail -n +4 > test/index.html
+./index.cgi --dev | tail -n +5 > test/index.html
 fixLinks test/index.html
 
 ## test GET file
 export REQUEST_METHOD=GET
 export QUERY_STRING="ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt"
-./index.cgi --dev | tail -n +4 > test/file.html
+./index.cgi --dev | tail -n +5 > test/file.html
 fixLinks test/file.html
 
 export REQUEST_METHOD=GET
 export QUERY_STRING="app=dnscrypt-proxy&file=domains-whitelist.txt"
-./index.cgi --dev | tail -n +4 > test/file2.html
+./index.cgi --dev | tail -n +5 > test/file2.html
 fixLinks test/file2.html
 
 export REQUEST_METHOD=POST
@@ -50,7 +50,7 @@ data="$(urlencode "google.com")"
 # echo "$data" > post.txt
 
 # echo "ListenAddresses=0.0.0.0%3A1053+&ServerNames=cloudflare+google+ " | ./index.cgi --dev
-echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data" | ./index.cgi --dev | tail -n +4 > test/post.html
+echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data" | ./index.cgi --dev | tail -n +5 > test/post.html
 fixLinks test/post.html
 
 export REQUEST_METHOD=POST

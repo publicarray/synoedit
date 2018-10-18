@@ -27,6 +27,7 @@ import (
 type HTTPResponse struct {
 	statusCode  int
 	Status      string
+	Server      string
 	ContentType string
 }
 
@@ -35,6 +36,7 @@ func NewHTTPResponse(statusCode int, statusMessage string) *HTTPResponse {
 	HTTPResponse := HTTPResponse{
 		statusCode:  statusCode,
 		Status:      "Status: " + fmt.Sprintf("%v", statusCode) + " " + statusMessage + "\r\n",
+		Server:      "Server: synoedit " + AppVersion + "\r\n",
 		ContentType: "Content-Type: text/html; charset=utf-8\r\n",
 	}
 	return &HTTPResponse
@@ -42,8 +44,8 @@ func NewHTTPResponse(statusCode int, statusMessage string) *HTTPResponse {
 
 // Print http response to stdout
 func (HTTPResponse *HTTPResponse) print(str ...string) {
-	fmt.Print(HTTPResponse.Status + HTTPResponse.ContentType + "\r\n\r\n")
-	fmt.Println(strings.Join(str, " "))
+	fmt.Print(HTTPResponse.Status + HTTPResponse.ContentType + HTTPResponse.Server + "\r\n")
+	fmt.Print(strings.Join(str, " "))
 	os.Exit(0)
 }
 
@@ -64,5 +66,19 @@ func logUnauthorised(str ...string) {
 // Exit program with a HTTP Not Found status code
 func notFound(str ...string) {
 	NewHTTPResponse(404, "Not Found").print(strings.Join(str, " "))
+	os.Exit(0)
+}
+
+// Return HTML with OK status message
+func okHTML(str ...string) {
+	NewHTTPResponse(200, "OK").print(strings.Join(str, " "))
+	os.Exit(0)
+}
+
+// Return plain text with OK status message
+func okPlain(str ...string) {
+	okPlainRes := NewHTTPResponse(200, "OK")
+	okPlainRes.ContentType = "Content-Type: text/plain;\r\n"
+	okPlainRes.print(strings.Join(str, " "))
 	os.Exit(0)
 }

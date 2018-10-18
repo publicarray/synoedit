@@ -146,12 +146,9 @@ func main() {
 			output := ExecuteAction(appName)
 
 			if ajax == "true" {
-				fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
-				fmt.Print(output)
-				return
+				okPlain(output)
 			}
 			renderHTML(fileData, "Not implemented", "")
-			return
 		}
 
 		if fileData != "" && appName != "" && fileName != "" {
@@ -159,15 +156,11 @@ func main() {
 			SaveFile(filePath, fileData)
 
 			if ajax == "true" {
-				fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
-				fmt.Print("File saved successfully!")
-				return
+				okPlain("File saved successfully!")
 			}
 			renderHTML(fileData, "File saved successfully!", "") // not complete
-			return
 		}
 		logError("No valid data submitted.")
-		return
 	}
 
 	if method == "GET" { // GET
@@ -180,9 +173,7 @@ func main() {
 
 		if ajax := readGet().Get("ajax"); ajax == "true" {
 			// expect an ajax response
-			fmt.Print("Status: 200 OK\r\nContent-Type: text/plain;\r\n\r\n")
-			fmt.Print(fileData)
-			return
+			okPlain(fileData)
 		}
 		// else respond with full html
 		renderHTML(fileData, "", "") // not complete
