@@ -50,12 +50,7 @@ func ReadFile(file string) string {
 
 // SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
-	err := ioutil.WriteFile(file+".tmp", []byte(data), 0644)
-	if err != nil {
-		logError(err.Error())
-	}
-
-	err = os.Rename(file+".tmp", file) // atomic
+	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
 		logError(err.Error())
 	}
