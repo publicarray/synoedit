@@ -7,10 +7,14 @@ urlencode() {
     echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3-
 }
 
-# ---------------------------------------------------------------------------
+countBytes() {
+    echo "$1" | wc -c | xargs
+}
+
 fixLinks() {
     sed -i '' -e "s@/webman/3rdparty/synoedit/@../@" $1
 }
+# ---------------------------------------------------------------------------
 
 if [ ! -d test ]; then
     echo "Preparing test folder.."
@@ -46,18 +50,18 @@ fixLinks test/file2.html
 
 export REQUEST_METHOD=POST
 export CONTENT_TYPE="application/x-www-form-urlencoded"
- # echo "jax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=google.com%0A" | wc -c
-export CONTENT_LENGTH=81
-# data="$(urlencode "$(cat test/dnscrypt-proxy/target/var/domains-whitelist.txt)")"
-data="$(urlencode "google.com")"
+data="ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$(urlencode 'google.com')"
+numOfBytes=$(countBytes "$data")
+export CONTENT_LENGTH=$numOfBytes
 # echo "$data" > post.txt
 
 # echo "ListenAddresses=0.0.0.0%3A1053+&ServerNames=cloudflare+google+ " | ./index.cgi --dev
-echo "ajax=true&app=dnscrypt-proxy&file=domains-whitelist.txt&fileContent=$data" | ./index.cgi --dev | tail -n +5 > test/post.html
+echo "$data" | ./index.cgi --dev | tail -n +5 > test/post.html
 fixLinks test/post.html
 
 export REQUEST_METHOD=POST
 export CONTENT_TYPE="application/x-www-form-urlencoded"
- # echo "ajax=true&action=true&app=dnscrypt-proxy" | wc -c
-export CONTENT_LENGTH=41
-echo "ajax=true&action=true&app=dnscrypt-proxy" | ./index.cgi --dev | tail -n +5 > test/action.html
+data="ajax=true&action=true&app=dnscrypt-proxy"
+numOfBytes=$(countBytes "$data")
+export CONTENT_LENGTH=$numOfBytes
+echo "$data" | ./index.cgi --dev | tail -n +5 > test/action.html
