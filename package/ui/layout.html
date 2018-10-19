@@ -7,8 +7,7 @@
     </head>
     <body>
         <div class="message">
-            <p class="error">{{.ErrorMessage}}</p>
-            <p class="success">{{.SuccessMessage}}</p>
+            <p class="messageText error">{{.ErrorMessage}}</p>
         </div>
         <div class="spinner">
             <div class="centerBox">
@@ -67,8 +66,8 @@
         <script>
             // FIXME: if this data becomes big enough get this data via ajax
             var configFiles = {{ .Applications }}
+            var dev = {{ .DevEnvironment }}
             // configFiles = JSON.parse(configFiles)
-            console.log(configFiles)
         </script>
         <script src="/webman/3rdparty/synoedit/js/bundle.js"></script>
     </body>

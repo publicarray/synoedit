@@ -44,7 +44,7 @@ func ReadFile(file string) string {
 		return string(data)
 
 	}
-	notFound("file not found:", file)
+	logError("File not found:", file)
 	return ""
 }
 

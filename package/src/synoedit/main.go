@@ -41,6 +41,7 @@ type Page struct {
 	SuccessMessage string
 	File           string
 	CurrentApp     string
+	DevEnvironment bool
 	Applications   map[string]ApplicationConfig
 }
 
@@ -60,6 +61,7 @@ func renderHTML(fileData string, successMessage string, errorMessage string) {
 	page.Applications = config.Applications
 	page.ErrorMessage = errorMessage
 	page.SuccessMessage = successMessage
+	page.DevEnvironment = *dev
 	fmt.Print(
 		"Status: 200 OK\r\n",
 		"Content-Type: text/html; charset=utf-8\r\n",
@@ -121,7 +123,7 @@ func main() {
 			output := ExecuteAction(appName)
 
 			if ajax == "true" {
-				okPlain(output)
+				jsonMessage(0, output)
 			}
 			renderHTML(fileData, "Not implemented", "")
 		}
@@ -131,7 +133,7 @@ func main() {
 			SaveFile(filePath, fileData)
 
 			if ajax == "true" {
-				okPlain("File saved successfully!")
+				jsonMessage(0, "File saved successfully!")
 			}
 			renderHTML(fileData, "File saved successfully!", "") // not complete
 		}
@@ -145,7 +147,7 @@ func main() {
 
 		if ajax == "true" {
 			// expect an ajax response
-			okPlain(fileData)
+			jsonMessage(0, fileData)
 		}
 		// else respond with full html
 		renderHTML(fileData, "", "") // not complete

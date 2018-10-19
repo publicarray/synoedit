@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -29,6 +30,15 @@ type HTTPResponse struct {
 	Status      string
 	Server      string
 	ContentType string
+}
+
+// JSONResponse for the JavaScript front-end
+//  DSM is modifying the return status codes and contents intended for detecting
+//  different messages in the JavaScript front-end
+type JSONResponse struct {
+	// 0 ok, 1 Error
+	Status  int    `json:"status"`
+	Message string `json:"message"`
 }
 
 // NewHTTPResponse generates a http/1.1 response
@@ -53,8 +63,7 @@ func (HTTPResponse *HTTPResponse) print(str ...string) {
 
 // Exit program with a HTTP Internal Error status code and a message (dump and die)
 func logError(str ...string) {
-	NewHTTPResponse(500, "Internal server error").print(strings.Join(str, " "))
-	os.Exit(0)
+	jsonMessage(1, strings.Join(str, " "))
 }
 
 // Exit program with a HTTP Unauthorized status code and a message (dump and die)
@@ -79,7 +88,27 @@ func okHTML(str ...string) {
 }
 
 // Return plain text with OK status message
-func okPlain(str ...string) {
-	NewHTTPResponse(200, "OK").print(strings.Join(str, " "))
+// func okPlain(str ...string) {
+// 	NewHTTPResponse(200, "OK").print(strings.Join(str, " "))
+// 	os.Exit(0)
+// }
+
+/**
+ * Send a JSON object as HTTP/1.1 in stdout
+ * @param  int status       The status code, 0=success 1=error
+ * @param  strings message  The message to send
+ */
+func jsonMessage(status int, message ...string) {
+	okJsonRes := NewHTTPResponse(200, "OK")
+	okJsonRes.ContentType = "application/json;\r\n"
+	jsonObj := &JSONResponse{
+		Status:  status,
+		Message: strings.Join(message, " "),
+	}
+	jsonBytes, err := json.Marshal(jsonObj)
+	if err != nil {
+		panic(err)
+	}
+	okJsonRes.print(string(jsonBytes))
 	os.Exit(0)
 }

@@ -17,16 +17,14 @@ require('codemirror/addon/comment/comment')
 require('codemirror/addon/comment/continuecomment')
 
 var CodeMirror = require('codemirror/lib/codemirror')
-var production = false
-var textArea = document.querySelectorAll('.synoedit .fileContent textarea')[0]
-var spinner = document.querySelectorAll('.synoedit .spinner')[0]
-var successMessage = document.querySelectorAll('.synoedit .success')[0]
-var errorMessage = document.querySelectorAll('.synoedit .error')[0]
-var actionForm = document.querySelectorAll('.synoedit .action')[0]
-var actionBtn = document.querySelectorAll('.synoedit .action .btn')[0]
-var appSelector = document.querySelectorAll('.synoedit .appSelect select')[0]
-var fileSelector = document.querySelectorAll('.synoedit .fileSelect select')[0]
-var fileForm = document.querySelectorAll('.synoedit .fileEditor')[0]
+var textArea = document.querySelector('.synoedit .fileContent textarea')
+var spinner = document.querySelector('.synoedit .spinner')
+var messageText = document.querySelector('.synoedit .messageText')
+var actionForm = document.querySelector('.synoedit .action')
+var actionBtn = document.querySelector('.synoedit .action .btn')
+var appSelector = document.querySelector('.synoedit .appSelect select')
+var fileSelector = document.querySelector('.synoedit .fileSelect select')
+var fileForm = document.querySelector('.synoedit .fileEditor')
 if (typeof CodeMirror === "undefined") {
     textArea.style.opacity = 1
 } else {
@@ -35,11 +33,7 @@ if (typeof CodeMirror === "undefined") {
         insance.save()
         var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
         ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() { // insance.getTextArea().value
-            // restart fade animation
-            successMessage.style.animation = 'none';
-            successMessage.offsetHeight //  trigger reflow
-            successMessage.innerText = 'Saved changes!'
-            successMessage.style.animation = null
+            displaySuccess('Saved changes!')
         })
     }
 
@@ -49,13 +43,10 @@ if (typeof CodeMirror === "undefined") {
     });
 }
 
-// function setGetParameter (key, value) {
-//     var baseUrl = [location.protocol, '//', location.host, location.pathname].join('')
-//     var param = '?' + key + '=' + value
-//     document.location = baseUrl+param
-// }
+debug(configFiles)
+
 function debug(message, object) {
-    if (production === false) {
+    if (typeof dev !== 'undefined' && dev) {
         console.log(message, object)
     }
 }
@@ -64,19 +55,47 @@ function addParameter(key, value) {
     return '&' + key + '=' + value
 }
 
-function ajax (method, data, successFunc) {
+function displayError(message) {
+    messageText.style.animation = 'none'
+    messageText.classList.remove('success')
+    messageText.classList.add('error')
+    messageText.offsetHeight //  trigger reflow
+    messageText.innerText = message
+    messageText.style.animation = null
+}
+
+function displaySuccess(message) {
+    // Restart Animation
+    messageText.style.animation = 'none'
+    messageText.classList.remove('error')
+    messageText.classList.add('success')
+    messageText.offsetHeight //  trigger reflow
+    messageText.innerText = message
+    messageText.style.animation = null
+}
+
+function ajax(method, data, successFunc, handlerFunc) {
     toggleSpinner() // start spinner
     var request = new XMLHttpRequest()
     request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
+        if (request.status == 200) {
             debug('ajax response', request)
-            successFunc(request)
+            response = JSON.parse(request.responseText)
+            if (response.status === 0) { // success
+                successFunc(response.message, response)
+            } else if (response.status === 1) { // error
+                console.error('ajax', response)
+                displayError(response.message)
+            } else {
+                console.info(response.status, response.message)
+            }
+
+            if (typeof handlerFunc === 'function') {
+                handlerFunc(response)
+            }
         } else {
-            console.error(request.status, request.responseText)
-            errorMessage.style.animation = 'none';
-            errorMessage.offsetHeight //  trigger reflow
-            errorMessage.innerText = request.responseText
-            errorMessage.style.animation = null
+            console.error('ajax', response)
+            displayError(response.message)
         }
         toggleSpinner()
     }
@@ -146,9 +165,9 @@ fileSelector.addEventListener('change', function(e) {
     var param = addParameter('app', appSelector.value) + addParameter('file', e.target.value)
     ajax('GET', param, function(r) {
         if (typeof editor !== 'undefined') {
-            editor.getDoc().setValue(r.responseText)
+            editor.getDoc().setValue(r)
         } else {
-            textArea.value = r.responseText
+            textArea.value = r
         }
     })
 }, false)
@@ -159,11 +178,7 @@ actionForm.addEventListener('submit', function(e) {
     var param = addParameter('app', appSelector.value)
     debug('params', param)
     ajax('POST', 'action=true' + param, function () {
-        // restart fade animation
-        successMessage.style.animation = 'none';
-        successMessage.offsetHeight //  trigger reflow
-        successMessage.innerText = 'Done!'
-        successMessage.style.animation = null
+        displaySuccess('Done!')
     })
 }, false)
 
@@ -173,10 +188,6 @@ fileForm.addEventListener('submit', function saveForm (e) {
     var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
     debug('params', param)
     ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() {
-        // restart fade animation
-        successMessage.style.animation = 'none';
-        successMessage.offsetHeight //  trigger reflow
-        successMessage.innerText = 'Saved changes!'
-        successMessage.style.animation = null
+        displaySuccess("Saved changes!")
     })
 }, false)
