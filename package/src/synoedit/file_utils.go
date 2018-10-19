@@ -20,6 +20,7 @@ package main
 import (
 	"io/ioutil"
 	"os"
+	"syscall"
 )
 
 // FileExists returns true if the file path exists.
@@ -50,9 +51,33 @@ func ReadFile(file string) string {
 
 // SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
-	err := ioutil.WriteFile(file, []byte(data), 0644)
+	// If file exists get file info struct
+	fInfo, err := os.Stat(file)
 	if err != nil {
 		logError(err.Error())
 	}
+
+	// Get stat structure (for uid and gid)
+	stat := fInfo.Sys().(*syscall.Stat_t)
+
+	// Create file
+	f, err := os.Create(file + ".tmp")
+	if err != nil {
+		logError(err.Error())
+	}
+	defer f.Close()
+	_, err = f.WriteString(data)
+	if err != nil {
+		logError(err.Error())
+	}
+	// set owner and group id
+	f.Chown(int(stat.Uid), int(stat.Gid))
+	f.Sync()
+
+	err = os.Rename(file+".tmp", file) // atomic
+	if err != nil {
+		logError(err.Error())
+	}
+
 	return
 }
