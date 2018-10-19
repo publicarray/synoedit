@@ -100,7 +100,8 @@ func okHTML(str ...string) {
  */
 func jsonMessage(status int, message ...string) {
 	okJsonRes := NewHTTPResponse(200, "OK")
-	okJsonRes.ContentType = "application/json;\r\n"
+	// RSM 1.2 Doesn't allow 'application/json' Content-Type to pass through!
+	// okJsonRes.ContentType = "application/json;\r\n"
 	jsonObj := &JSONResponse{
 		Status:  status,
 		Message: strings.Join(message, " "),

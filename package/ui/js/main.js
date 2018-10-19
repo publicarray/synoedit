@@ -94,8 +94,8 @@ function ajax(method, data, successFunc, handlerFunc) {
                 handlerFunc(response)
             }
         } else {
-            console.error('ajax', response)
-            displayError(response.message)
+            console.error('ajax', request)
+            displayError("Oh no! A fatal error has occurred!")
         }
         toggleSpinner()
     }
