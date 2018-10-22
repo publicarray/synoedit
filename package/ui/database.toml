@@ -1,7 +1,9 @@
+# Application Name and Application specific configuration
 [app."dnscrypt-proxy"]
 
-# The path where the configuration files live
-# root folder is '/var/packages/'
+# The path where the configuration files live.
+# The purpose of this setting is to hide the path in the GUI
+# The root directory is '/var/packages/'
 directory = 'dnscrypt-proxy/target/var/'
 
 # List of configuration files
@@ -19,19 +21,41 @@ files = [
     'domains-blacklist-local-additions.txt'
 ]
 
+# Applications can have one executable action
+# Optionally the output of the command can be saved to a file
 [app."dnscrypt-proxy".action]
+    # Name of the button. I Recommend naming it with an action
     button_label = "Generate Blacklist"
+    # Executable path
     exec = "python"
+    # Arguments
     args = ["/var/packages/dnscrypt-proxy/target/var/generate-domains-blacklist.py"]
+    # Directory to change to before running the command
     dir = "/var/packages/dnscrypt-proxy/target/var"
-    out-file = "/var/packages/dnscrypt-proxy/target/var/blacklist.txt"
+    # A file where the output is saved to. Must be a file from the previously set "files" option
+    out-file = "blacklist.txt"
 # [app."dnscrypt-proxy".action]
 #     button_label = "Check config file"
 #     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
 #     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
 
-[app."example"]
-directory = 'example/target/var/'
-files = [
-    'example.toml'
-]
+
+####################################
+#              Examples            #
+####################################
+
+# [app."example"]
+# directory = 'example/target/'
+# files = [
+#     'example.conf'
+# ]
+
+# [app."exampleAction".action]
+#     button_label = "Get kernel name"
+#     exec = "uname"
+
+# [app."exampleAction2".action]
+#     button_label = "List files"
+#     dir = "/"
+#     exec = "ls"
+#     args = ["-l", "-a"]

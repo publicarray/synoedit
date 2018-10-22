@@ -33,8 +33,8 @@ type Config struct {
 }
 
 type ApplicationConfig struct {
-	Name      *string `toml:"name"`
-	Directory *string `toml:"directory"`
+	Name      string `toml:"name"`
+	Directory string `toml:"directory"`
 	// Path                      *string       `toml:"path"`
 	Files []string `toml:"files"`
 	// Files  map[string] `toml:"files"`
@@ -43,11 +43,11 @@ type ApplicationConfig struct {
 }
 
 type ActionConfig struct {
-	Label      *string  `toml:"button_label"`
-	Exec       *string  `toml:"exec"`
+	Label      string   `toml:"button_label"`
+	Exec       string   `toml:"exec"`
 	Args       []string `toml:"args"`
-	Dir        *string  `toml:"dir"`
-	OutputFile *string  `toml:"out-file"`
+	Dir        string   `toml:"dir"`
+	OutputFile string   `toml:"out-file"`
 }
 
 func newConfig() Config {
@@ -85,7 +85,7 @@ func ConfigLoad(configFile *string) error {
 		logError("Unable to load the configuration file")
 		return err
 	}
-	// This is to prevent from modifying unapproved files.
+	// This is to prevent damage from modifying unapproved files.
 	if !verifyFile(foundConfigFile, DefaultDatabaseSHA256Checksum) {
 		logError("Warning! the database.toml file has been modified! Are you sure you want to continue?")
 	}

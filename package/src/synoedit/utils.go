@@ -27,7 +27,7 @@ func GetFilePath(appName string, fileName string) string {
 	if app, exists := config.Applications[appName]; exists {
 		for _, file := range app.Files {
 			if file == fileName {
-				return rootDir + *app.Directory + fileName
+				return rootDir + app.Directory + fileName
 			}
 		}
 		logError("File not found in App configuration!")
@@ -50,23 +50,23 @@ func CheckCmdExists(cmd string) bool {
 func ExecuteAction(appName string) string {
 	if app, exists := config.Applications[appName]; exists {
 
-		if !CheckCmdExists(*app.Action.Exec) {
+		if !CheckCmdExists(app.Action.Exec) {
 			logError("Command could not be found or is not installed!")
 		}
 
-		var stdout, stderr bytes.Buffer
-		cmd := exec.Command(*app.Action.Exec, app.Action.Args...)
-		cmd.Dir = *app.Action.Dir
-		cmd.Stdout = &stdout
+		var stderr bytes.Buffer
+		cmd := exec.Command(app.Action.Exec, app.Action.Args...)
+		cmd.Dir = app.Action.Dir
 		cmd.Stderr = &stderr
-		err := cmd.Run()
+		stdout, err := cmd.Output()
 		if err != nil {
-			logError(string(stderr.Bytes()) + err.Error())
+			logError(string(stdout) + err.Error())
 		}
-		if len(*app.Action.OutputFile) > 0 {
-			SaveFile(*app.Action.OutputFile, string(stdout.Bytes()))
+		if len(app.Action.OutputFile) > 0 {
+			filePath := GetFilePath(appName, app.Action.OutputFile)
+			SaveFile(filePath, string(stdout))
 		}
-		return string(stdout.Bytes()) + string(stderr.Bytes())
+		return string(stdout) + string(stderr.Bytes())
 	}
 	logError("App not found in configuration!")
 	return ""

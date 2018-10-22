@@ -31,7 +31,7 @@ if (typeof CodeMirror === "undefined") {
     CodeMirror.commands.save = function(insance) { // overload save function
         debug("CodeMirror save event", insance)
         insance.save()
-        var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
+        var param = addParameter('app', getAppName()) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
         ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() { // insance.getTextArea().value
             displaySuccess('Saved changes!')
         })
@@ -45,6 +45,7 @@ if (typeof CodeMirror === "undefined") {
 
 debug(configFiles)
 
+// Activate with: dev = true
 function debug(message, object) {
     if (typeof dev !== 'undefined' && dev) {
         console.log(message, object)
@@ -129,6 +130,18 @@ function getActionLabel (appName) {
    return configFiles[appName].Action.Label || ""
 }
 
+function getAppName() {
+    return appSelector.value
+}
+
+function updateEditorContent(newText) {
+    if (typeof editor !== 'undefined') {
+        editor.getDoc().setValue(newText)
+    } else {
+        textArea.value = newText
+    }
+}
+
 appSelector.addEventListener('change', function(e) {
     var appName = e.target.value;
     // remove all items
@@ -162,22 +175,23 @@ appSelector.addEventListener('change', function(e) {
 }, false)
 
 fileSelector.addEventListener('change', function(e) {
-    var param = addParameter('app', appSelector.value) + addParameter('file', e.target.value)
-    ajax('GET', param, function(r) {
-        if (typeof editor !== 'undefined') {
-            editor.getDoc().setValue(r)
-        } else {
-            textArea.value = r
-        }
+    var param = addParameter('app', getAppName()) + addParameter('file', e.target.value)
+    ajax('GET', param, function(responseText) {
+        updateEditorContent(responseText)
     })
 }, false)
 
 actionForm.addEventListener('submit', function(e) {
     if (e.preventDefault) e.preventDefault();
     debug('action event', e)
-    var param = addParameter('app', appSelector.value)
+    var param = addParameter('app', getAppName()) + addParameter('ajax', 'true')
     debug('params', param)
-    ajax('POST', 'action=true' + param, function () {
+    ajax('POST', 'action=true' + param, function (responseText) {
+        // Update editor content if viewing the file currently being modified
+        var modifiedFile = configFiles[getAppName()].Action.OutputFile
+        if (modifiedFile !== '' && fileSelector.value == modifiedFile) {
+            updateEditorContent(responseText)
+        }
         displaySuccess('Done!')
     })
 }, false)
@@ -185,7 +199,7 @@ actionForm.addEventListener('submit', function(e) {
 fileForm.addEventListener('submit', function saveForm (e) {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     debug('file content submit event', e)
-    var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
+    var param = addParameter('app', getAppName()) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
     debug('params', param)
     ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() {
         displaySuccess("Saved changes!")
