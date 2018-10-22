@@ -39,10 +39,39 @@ files = [
 #     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
 #     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
 
+###############################
+#        SynoCommunity        #
+###############################
 
-####################################
-#              Examples            #
-####################################
+[app."git"]
+directory = "git/target/var/"
+files = [
+    "gitconfig"
+]
+
+[app."monit"]
+directory = 'monit/target/var/'
+files = [
+    'monitrc',
+    'monit.d/monit'
+]
+
+[app."sslh"]
+directory = "sslh/target/var/"
+files = [
+    "sslh.cfg"
+]
+
+[app."syncthing"]
+directory = "syncthing/target/var/"
+files = [
+    "options.conf",
+    "config.xml"
+]
+
+##########################
+#        Examples        #
+##########################
 
 # [app."example"]
 # directory = 'example/target/'
@@ -59,3 +88,180 @@ files = [
 #     dir = "/"
 #     exec = "ls"
 #     args = ["-l", "-a"]
+
+#################################################################################
+#       NOT TESTED! - Config files that I got from grepping synocommunity       #
+#################################################################################
+
+# [app."haproxy"]
+# directory = "haproxy/target/var/"
+# files = [
+#     "haproxy.cfg"
+# ]
+
+# [app."bitlbee"]
+# directory = "bitlbee/target/var/"
+# files = [
+#     "bitlbee.conf"
+# ]
+
+# [app."couchpotatoserver"]
+# directory = "couchpotatoserver/target/var/"
+# files = [
+#     "settings.conf"
+# ]
+
+# [app."deluge"]
+# directory = "deluge/target/var/"
+# files = [
+#     "core.conf"
+# ]
+
+# [app."gateone"]
+# directory = "gateone/target/var/"
+# files = [
+#     "90custom.conf",
+#     "95users.conf"
+# ]
+
+# [app."lirc"]
+# directory = "lirc/target/var/"
+# files = [
+#     "lircd.conf"
+# ]
+
+# [app."mosquitto"]
+# directory = "mosquitto/target/var/"
+# files = [
+#     "mosquitto.conf"
+# ]
+
+# [app."oscam"]
+# directory = "oscam/target/var/"
+# files = [
+#     "oscam.conf"
+# ]
+
+# [app."redis"]
+# directory = "redis/target/var/"
+# files = [
+#     "redis.conf"
+# ]
+
+# [app."shairport-sync"]
+# directory = "shairport-sync/target/var/"
+# files = [
+#     "alsa.conf"
+# ]
+
+# [app."squidguard"]
+# directory = "squidguard/target/var/"
+# files = [
+#     "c-icap.conf",
+#     "mime.conf",
+#     "squid.conf",
+#     "squidclamav.conf",
+#     "squidguardmgr.conf",
+# ]
+
+# [app."umurmur"]
+# directory = "umurmur/target/var/"
+# files = [
+#     "umurmur.conf"
+# ]
+
+# [app."znc"]
+# directory = "znc/target/var/"
+# files = [
+#     "znc.conf"
+# ]
+
+# [app."flexget"]
+# directory = "flexget/target/var/"
+# files = [
+#     "config.yml"
+# ]
+
+# [app."wallabag"]
+# directory = "wallabag/target/var/"
+# files = [
+#     "parameters.yml"
+# ]
+
+# [app."icecast"]
+# directory = "icecast/target/var/"
+# files = [
+#     "icecast.xml"
+# ]
+
+# [app."museek-plus"]
+# directory = "museek-plus/target/var/"
+# files = [
+#     "config.xml"
+# ]
+
+# [app."radarr"]
+# directory = "radarr/target/var/"
+# files = [
+#     "config.xml"
+# ]
+
+# [app."sonarr"]
+# directory = "sonarr/target/var/"
+# files = [
+#     "config.xml"
+# ]
+
+# [app."plexpy"]
+# directory = "plexpy/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."headphones"]
+# directory = "headphones/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."sickrage"]
+# directory = "sickrage/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."lazylibrarian"]
+# directory = "lazylibrarian/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."sabnzbd"]
+# directory = "sabnzbd/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."comskip"]
+# directory = "comskip/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."mylar"]
+# directory = "mylar/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."plexivity"]
+# directory = "plexivity/target/var/"
+# files = [
+#     "config.ini"
+# ]
+
+# [app."ffsync"]
+# directory = "ffsync/target/var/"
+# files = [
+#     "ffsync.ini"
+# ]

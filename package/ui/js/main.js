@@ -2,19 +2,23 @@ require('codemirror/mode/toml/toml')
 require('codemirror/mode/xml/xml')
 require('codemirror/mode/yaml/yaml')
 require('codemirror/mode/nginx/nginx')
+require('codemirror/mode/shell/shell')
+require('codemirror/mode/properties/properties')
 
 require('codemirror/addon/search/search')
 require('codemirror/addon/search/searchcursor')
+require('codemirror/addon/search/jump-to-line.js')
 require('codemirror/addon/dialog/dialog')
 
 require('codemirror/addon/edit/closebrackets')
-require('codemirror/addon/edit/closetag')
-require('codemirror/addon/edit/continuelist')
 require('codemirror/addon/edit/matchtags')
-require('codemirror/addon/edit/trailingspace')
+require('codemirror/addon/fold/xml-fold')
+require('codemirror/addon/edit/matchbrackets')
+// require('codemirror/addon/edit/trailingspace')
 
 require('codemirror/addon/comment/comment')
-require('codemirror/addon/comment/continuecomment')
+// require('codemirror/addon/comment/continuecomment')
+require('codemirror/keymap/sublime')
 
 var CodeMirror = require('codemirror/lib/codemirror')
 var textArea = document.querySelector('.synoedit .fileContent textarea')
@@ -38,7 +42,12 @@ if (typeof CodeMirror === "undefined") {
     }
 
     var editor = CodeMirror.fromTextArea(textArea, {
-        lineNumbers: true
+        lineNumbers: true,
+        keyMap: 'sublime',
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        matchTags: true,
+        showCursorWhenSelecting: true,
         // theme: 'monokai'
     });
 }
