@@ -42,6 +42,11 @@ files = [
 ###############################
 #        SynoCommunity        #
 ###############################
+[app."dnscrypt"]
+directory = "dnscrypt/target/var/"
+files = [
+    "dnscrypt-proxy.conf"
+]
 
 [app."git"]
 directory = "git/target/var/"
