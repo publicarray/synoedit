@@ -15,3 +15,4 @@ codemirror.css
 package/ui/css/dialog.css
 # go dep
 package/pkg
+package/ui/codemirror/

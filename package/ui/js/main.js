@@ -1,26 +1,3 @@
-require('codemirror/mode/toml/toml')
-require('codemirror/mode/xml/xml')
-require('codemirror/mode/yaml/yaml')
-require('codemirror/mode/nginx/nginx')
-require('codemirror/mode/shell/shell')
-require('codemirror/mode/properties/properties')
-
-require('codemirror/addon/search/search')
-require('codemirror/addon/search/searchcursor')
-require('codemirror/addon/search/jump-to-line.js')
-require('codemirror/addon/dialog/dialog')
-
-require('codemirror/addon/edit/closebrackets')
-require('codemirror/addon/edit/matchtags')
-require('codemirror/addon/fold/xml-fold')
-require('codemirror/addon/edit/matchbrackets')
-// require('codemirror/addon/edit/trailingspace')
-
-require('codemirror/addon/comment/comment')
-// require('codemirror/addon/comment/continuecomment')
-require('codemirror/keymap/sublime')
-
-var CodeMirror = require('codemirror/lib/codemirror')
 var textArea = document.querySelector('.synoedit .fileContent textarea')
 var spinner = document.querySelector('.synoedit .spinner')
 var messageText = document.querySelector('.synoedit .messageText')
@@ -29,9 +6,12 @@ var actionBtn = document.querySelector('.synoedit .action .btn')
 var appSelector = document.querySelector('.synoedit .appSelect select')
 var fileSelector = document.querySelector('.synoedit .fileSelect select')
 var fileForm = document.querySelector('.synoedit .fileEditor')
+var editor
+
 if (typeof CodeMirror === "undefined") {
     textArea.style.opacity = 1
 } else {
+    CodeMirror.modeURL = "codemirror/mode/%N/%N.js";
     CodeMirror.commands.save = function(insance) { // overload save function
         debug("CodeMirror save event", insance)
         insance.save()
@@ -41,15 +21,17 @@ if (typeof CodeMirror === "undefined") {
         })
     }
 
-    var editor = CodeMirror.fromTextArea(textArea, {
+    editor = CodeMirror.fromTextArea(textArea, {
         lineNumbers: true,
         keyMap: 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         matchTags: true,
+        // showTrailingSpace: true,
+        // continueComments: true,
         showCursorWhenSelecting: true,
         // theme: 'monokai'
-    });
+    })
 }
 
 debug(configFiles)
@@ -60,6 +42,34 @@ function debug(message, object) {
         console.log(message, object)
     }
 }
+
+function changeMode(filename) {
+    // https://codemirror.net/demo/loadmode.html
+    var mode = CodeMirror.findModeByFileName(filename)
+    if (mode && mode.mode) {
+        if (mode.mode === "null") {
+            debug("changeMode-fallback: ", 'toml')
+            mode.mode = 'toml'
+        }
+        editor.setOption("mode", mode.mode)
+        CodeMirror.autoLoadMode(editor, mode.mode)
+        debug("changeMode: ", mode)
+    }
+}
+
+// const addGetParameter = (function addGetParameterInit (key, value) {
+//     this.urlParams = new URLSearchParams(window.location.search)
+//     this.baseUrl = [location.protocol, '//', location.host, location.pathname].join('')
+//     this.go () => {
+//         document.location = this.baseUrl + this.urlParams.toString()
+//     }
+//     this.string() => {
+//         this.urlParams.toString()
+//     }
+//     return (key, value) => {
+//         this.urlParams.set(key, value)
+//     }
+// })()
 
 function addParameter(key, value) {
     return '&' + key + '=' + value
@@ -181,6 +191,7 @@ appSelector.addEventListener('change', function(e) {
 
 fileSelector.addEventListener('change', function(e) {
     var param = addParameter('app', appSelector.value) + addParameter('file', e.target.value)
+    changeMode(e.target.value)
     ajax('GET', param, function(responseText) {
         updateEditorContent(responseText)
     })

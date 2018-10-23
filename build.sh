@@ -14,24 +14,18 @@ usage() {
     echo "  all            Runs browserify and Compiles go project for all architectures"
     echo "  compile        compile go project"
     echo "  package        create spk"
-    echo "  dev            runs '_browserify', 'compile' and 'package' commands"
+    echo "  dev            runs '_cp', 'compile' and 'package' commands"
     echo ""
 }
 
-_browserify() {
-    # A dump function to run browserify
-    if command -v browserify > /dev/null; then
-        browserify package/ui/js/main.js -o package/ui/js/bundle.js
-    elif command -v yarn > /dev/null && yarn list 2> /dev/null | grep -q browserify; then
-        yarn browserify package/ui/js/main.js -o package/ui/js/bundle.js
-    elif command -v npm > /dev/null; then
-        npm run browserify package/ui/js/main.js -o package/ui/js/bundle.js
-    else
-        echo "browserify is required to bundle JavaScript files. Install with 'yarn global add browserify'" >&2
-        exit 1
-    fi
-    cp node_modules/codemirror/lib/*.css package/ui/css/
-    cp node_modules/codemirror/addon/dialog/*.css package/ui/css/
+_cp() {
+    mkdir -p package/ui/codemirror/theme/
+    cp -r node_modules/codemirror/addon package/ui/codemirror/
+    cp -r node_modules/codemirror/keymap package/ui/codemirror/
+    cp -r node_modules/codemirror/lib package/ui/codemirror/
+    cp -r node_modules/codemirror/mode package/ui/codemirror/
+    # cp -r node_modules/codemirror/theme package/ui/codemirror/
+    # cp -r node_modules/codemirror/theme/monokai.css package/ui/codemirror/theme/
 }
 
 ## Update node_modules
@@ -41,7 +35,7 @@ update() {
     elif command -v npm > /dev/null; then
         npm update
     fi
-    _browserify
+    _cp
 
     if command -v dep > /dev/null; then
         cd package || exit
@@ -62,7 +56,7 @@ dependencies() {
         else
             echo "JavaScript libraries are NOT updated! Requires Yarn or NPM to be installed on the system." >&2
         fi
-        _browserify
+        _cp
     fi
     if [ ! -d package/src/synoedit/vendor ]; then
         if command -v dep > /dev/null; then
@@ -172,16 +166,16 @@ elif [ "$CMD" = "update" ]; then
 elif [ "$CMD" = "dependencies" ] || [ "$CMD" = "javascript" ] || [ "$CMD" = "yarn" ] || [ "$CMD" = "npm" ]; then
     dependencies
 elif [ "$CMD" = "all" ]; then
-    _browserify
+    _cp
     compileAll
     compile
 elif [ "$CMD" = "compile" ]; then
-    _browserify
+    _cp
     compile "$BUILD_ARCH"
 elif [ "$CMD" = "package" ]; then
     package
 elif [ "$CMD" = "dev" ]; then
-    _browserify
+    _cp
     compile
     package
 else
