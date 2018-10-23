@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	AppVersion = "0.0.1"
+	AppVersion = "0.0.2"
 	// DefaultConfigFileName = "synoedit.toml"
 	DefaultDatabaseFileName       = "database.toml"
 	DefaultDatabaseSHA256Checksum = "718169860c57b123b0169eae4638a9c4f5c1657bc0d871cf31646c4c6e44bd29"
