@@ -30,7 +30,7 @@ const (
 	AppVersion = "0.0.2"
 	// DefaultConfigFileName = "synoedit.toml"
 	DefaultDatabaseFileName       = "database.toml"
-	DefaultDatabaseSHA256Checksum = "4f1c9fcb1926d0ba31f3157216751d838f733e6eeece508d3be2272d7480808c"
+	DefaultDatabaseSHA256Checksum = "da745008c71cda6c993f5b448ada798978d28e0ba00e441190a9bcd17a50ad9c"
 )
 
 // Page contains the data that is passed to the template (layout.html)

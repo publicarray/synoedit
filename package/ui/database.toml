@@ -74,6 +74,12 @@ files = [
     "config.xml"
 ]
 
+[app."i2pd"]
+directory = "i2pd/target/var/"
+files = [
+    "i2pd.conf"
+]
+
 ##########################
 #        Examples        #
 ##########################
