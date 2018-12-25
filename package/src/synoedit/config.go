@@ -28,10 +28,12 @@ import (
 	"path/filepath"
 )
 
+// Config holds the configuration for many Applications specified in the toml database
 type Config struct {
 	Applications map[string]ApplicationConfig `toml:"app"`
 }
 
+// ApplicationConfig holds the configuration for a single Application
 type ApplicationConfig struct {
 	Name      string `toml:"name"`
 	Directory string `toml:"directory"`
@@ -42,6 +44,7 @@ type ApplicationConfig struct {
 	Action ActionConfig `toml:"action"`
 }
 
+// ActionConfig holds the configuration for an custom action for an Application
 type ActionConfig struct {
 	Label      string   `toml:"button_label"`
 	Exec       string   `toml:"exec"`
@@ -79,6 +82,8 @@ func verifyFile(filePath string, sha256checksum string) bool {
 }
 
 // borrowed from dnscrypt-proxy
+
+// ConfigLoad loads the configuration file
 func ConfigLoad(configFile *string) error {
 	foundConfigFile, err := findConfigFile(configFile)
 	if err != nil {

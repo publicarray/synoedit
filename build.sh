@@ -28,6 +28,7 @@ usage() {
     echo "  package        create spk"
     echo "  dev            runs '_cp', 'compile' and 'package' commands"
     echo "  clean|clear    remove all *spk files"
+    echo "  lint           lint code"
     echo ""
 }
 
@@ -89,6 +90,7 @@ dependencies() {
 }
 
 compileAll() {
+    lint
     dependencies
 
     ## match arches to go build arches:
@@ -136,7 +138,6 @@ compile() {
     _ARCH="${1:-""}"
     _GOARM="${2:-""}"
     if command -v go > /dev/null; then
-        gofmt -s -w -- package/src/synoedit/*.go
         cd package || exit
         export GOPATH=$PWD
         cd src/synoedit || exit
@@ -211,6 +212,20 @@ package() {
         -- *
 }
 
+lint () {
+    gofmt -s -w -- package/src/synoedit/*.go
+    if ! command -v golint > /dev/null || ! command -v revive > /dev/null; then
+        go get -u golang.org/x/lint/golint
+    fi
+
+    if command -v golint > /dev/null; then
+        golint package/src/synoedit/*.go
+    elif command -v revive > /dev/null; then
+        revive package/src/synoedit/*.go
+    fi
+
+}
+
 CMD="${1:-""}"
 BUILD_ARCH="${2:-""}"
 if [ "$CMD" = "compress" ]; then
@@ -234,6 +249,8 @@ elif [ "$CMD" = "dev" ]; then
     package
 elif [ "$CMD" = "clean" ] || [ "$CMD" = "clear" ]; then
     clean
+elif [ "$CMD" = "lint" ]; then
+    lint
 else
     usage
 fi

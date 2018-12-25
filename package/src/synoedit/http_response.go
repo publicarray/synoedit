@@ -99,7 +99,7 @@ func okHTML(str ...string) {
  * @param  strings message  The message to send
  */
 func jsonMessage(status int, message ...string) {
-	okJsonRes := NewHTTPResponse(200, "OK")
+	okJSONRes := NewHTTPResponse(200, "OK")
 	// RSM 1.2 Doesn't allow 'application/json' Content-Type to pass through!
 	// okJsonRes.ContentType = "application/json;\r\n"
 	jsonObj := &JSONResponse{
@@ -110,6 +110,6 @@ func jsonMessage(status int, message ...string) {
 	if err != nil {
 		panic(err)
 	}
-	okJsonRes.print(string(jsonBytes))
+	okJSONRes.print(string(jsonBytes))
 	os.Exit(0)
 }

@@ -60,7 +60,7 @@ func token() (string, error) {
 	}
 	token := r.FindSubmatch(cmdOut)
 	if len(token) < 1 {
-		return string(cmdOut), errors.New("Sorry, you need to login first!")
+		return string(cmdOut), errors.New("sorry, you need to login first")
 	}
 	return string(token[1]), nil
 }

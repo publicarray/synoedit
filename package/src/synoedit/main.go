@@ -27,10 +27,13 @@ import (
 )
 
 const (
+	// AppVersion is the Program Version
 	AppVersion = "0.0.2"
-	// DefaultConfigFileName = "synoedit.toml"
-	DefaultDatabaseFileName       = "database.toml"
+	// DefaultDatabaseFileName is the main file name for database
+	DefaultDatabaseFileName = "database.toml"
+	// DefaultDatabaseSHA256Checksum is used to detect manipulation or corruption
 	DefaultDatabaseSHA256Checksum = "da745008c71cda6c993f5b448ada798978d28e0ba00e441190a9bcd17a50ad9c"
+	// DefaultConfigFileName = "synoedit.toml"
 )
 
 // Page contains the data that is passed to the template (layout.html)

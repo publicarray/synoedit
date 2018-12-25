@@ -37,7 +37,8 @@ func GetFilePath(appName string, fileName string) string {
 	return ""
 }
 
-// Look for command in $PATH or Check that file exits
+// CheckCmdExists returns true when the command (cmd)
+// is found in the $PATH variable or when the file exits
 func CheckCmdExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
@@ -46,7 +47,7 @@ func CheckCmdExists(cmd string) bool {
 	return true
 }
 
-// Execute custom action given the application string
+// ExecuteAction runs a custom action given the application name
 func ExecuteAction(appName string) string {
 	if app, exists := config.Applications[appName]; exists {
 
