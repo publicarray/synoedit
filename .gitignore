@@ -16,3 +16,4 @@ package/ui/css/dialog.css
 # go dep
 package/pkg
 package/ui/codemirror/
+package/ui/test.html

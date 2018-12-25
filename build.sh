@@ -29,6 +29,7 @@ usage() {
     echo "  dev            runs '_cp', 'compile' and 'package' commands"
     echo "  clean|clear    remove all *spk files"
     echo "  lint           lint code"
+    echo "  test           run a simple test"
     echo ""
 }
 
@@ -149,6 +150,7 @@ compile() {
             # env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
             echo "GOARCH=$_ARCH GOARM=$_GOARM"
             env CGO_ENABLED=0 GOOS=linux GOARCH="$_ARCH" GOARM="$_GOARM" go build -ldflags "-s -w" -o ../../ui/index.cgi
+            chmod +x ../../ui/index.cgi
         fi
         cd ../../.. || edit
     else
@@ -224,6 +226,18 @@ lint () {
         revive package/src/synoedit/*.go
     fi
 
+    if command -v yarn > /dev/null; then
+        yarn audit
+    elif command -v npm > /dev/null; then
+        npm audit
+    fi
+}
+
+test () {
+    lint
+    compile
+    env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET package/ui/index.cgi --dev > package/ui/test.html
+    # godoc ./package/src/synoedit/
 }
 
 CMD="${1:-""}"
@@ -251,6 +265,8 @@ elif [ "$CMD" = "clean" ] || [ "$CMD" = "clear" ]; then
     clean
 elif [ "$CMD" = "lint" ]; then
     lint
+elif [ "$CMD" = "test" ]; then
+    test
 else
     usage
 fi

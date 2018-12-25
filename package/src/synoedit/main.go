@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // Package synoedit is a Synology package for editing files through a web interface
-package synoedit
+package main
 
 import (
 	"flag"
