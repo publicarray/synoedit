@@ -4,14 +4,26 @@
 
 set -u
 
+# https://originhelp.synology.com/developer-guide/appendix/index.html
+# https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model
+# https://github.com/SynoCommunity/spksrc/blob/master/mk/spksrc.common.mk
+ARM5_ARCHES="88f6281"
+ARM7_ARCHES="alpine armada370 armada375 armada38x armadaxp comcerto2k monaco hi3535 ipq806x northstarplus"
+ARM8_ARCHES="rtd1296 armada37xx aarch64"
+ARM_ARCHES="$ARM5_ARCHES $ARM7_ARCHES $ARM8_ARCHES"
+PPC32_ARCHES="powerpc ppc824x ppc853x ppc854x qoriq"
+x86_ARCHES="evansport"
+x64_ARCHES="apollolake avoton braswell broadwell broadwellnk bromolow cedarview denverton dockerx64 grantley kvmx64 x86 x64 x86_64"
+# x64_ARCHES="x86 cedarview bromolow"
+
 usage() {
     echo "Usage:  $0 command"
     echo
     echo "Commands:"
     echo "  compress       compresses compiled binary with upx"
     echo "  update         update dependencies with yarn or npm"
-    echo "  dependencies   installs dependencies and bundles them through browserify"
-    echo "  all            Runs browserify and Compiles go project for all architectures"
+    echo "  dependencies   installs npm and go dependencies (yarn/npm and dep)"
+    echo "  all            Compiles go project for all architectures"
     echo "  compile        compile go project"
     echo "  package        create spk"
     echo "  dev            runs '_cp', 'compile' and 'package' commands"
@@ -74,11 +86,37 @@ dependencies() {
 compileAll() {
     dependencies
 
+    ## match arches to go build arches:
     arch="arm arm64 386 amd64 ppc64"
-    for ARCH in ${arch}
-    do
-       compile "$ARCH"
-       package "$ARCH"
+    for ARCH in ${arch}; do
+        compile "$ARCH"
+        supported_arches=""
+        case "$ARCH" in
+            "arm")
+                supported_arches="$ARM5_ARCHES $ARM7_ARCHES"
+                package "$ARCH" "ipq806x northstarplus" "1.1"
+
+                supported_arches=$(echo "$supported_arches" | sed 's/ ipq806x//' | sed 's/ northstarplus//')
+                ;;
+            "arm64")
+                supported_arches="$ARM8_ARCHES"
+                ;;
+            "386")
+                supported_arches="$x86_ARCHES"
+                ;;
+            "amd64")
+                supported_arches="$x64_ARCHES"
+                ;;
+            "ppc64")
+                supported_arches=""
+                ;;
+            *)
+                echo "Unsupported Architecture!"
+                exit 1
+                ;;
+        esac
+        OS_MIN_VER=6.1-14715
+        package "$ARCH" "$supported_arches" "$OS_MIN_VER"
     done
 }
 
@@ -119,6 +157,8 @@ compress() { # not recommended, slows down launch time ~0.8s
 ## Step 3 Compress package and create spk
 package() {
     ARCH=${1:-native}
+    SUPP_ARCH=${2:-noarch}
+    OS_MIN_VER=${3:-6.1-14715}
     # sha1sum="$(shell command -v sha1sum 2>/dev/null || command -v gsha1sum 2>/dev/null)"
     # sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
@@ -136,12 +176,13 @@ package() {
     ## Create checksum
     checksum=$($md5sum package.tgz | awk '{print $1}')
     sed -i '' -e "s/checksum=.*/checksum=\"${checksum}\"/" INFO
-    # sed -i '' -e "s/arch=.*/arch=\"${ARCH}\"/" INFO
+    sed -i '' -e "s/arch=.*/arch=\"${SUPP_ARCH}\"/" INFO
+    sed -i '' -e "s/os_min_ver=.*/os_min_ver=\"${OS_MIN_VER}\"/" INFO
     # pkg_get_spk_platform
     # pkg_get_spk_family
 
     ## Create spk
-    tar cpf synoedit-"$ARCH".spk \
+    tar cpf synoedit-"$ARCH"-"$OS_MIN_VER".spk \
         --exclude='node_modules' \
         --exclude='*.afdesign' \
         --exclude='*.afphoto' \
