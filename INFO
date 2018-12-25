@@ -1,6 +1,6 @@
 package="synoedit"
 displayname="Syno Edit"
-version="1.0.0"
+version="0.0.2"
 os_min_ver="6.1-14715"
 description="A simple text editor GUI for Synology. JavaScript editor implemented using CodeMirror."
 arch="noarch"
