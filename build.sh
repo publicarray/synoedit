@@ -27,6 +27,7 @@ usage() {
     echo "  compile        compile go project"
     echo "  package        create spk"
     echo "  dev            runs '_cp', 'compile' and 'package' commands"
+    echo "  clean|clear    remove all *spk files"
     echo ""
 }
 
@@ -38,6 +39,10 @@ _cp() {
     cp -r node_modules/codemirror/mode package/ui/codemirror/
     # cp -r node_modules/codemirror/theme package/ui/codemirror/
     # cp -r node_modules/codemirror/theme/monokai.css package/ui/codemirror/theme/
+}
+
+clean() {
+    rm -v ./*.spk
 }
 
 ## Update node_modules
@@ -87,24 +92,31 @@ compileAll() {
     dependencies
 
     ## match arches to go build arches:
-    arch="arm arm64 386 amd64 ppc64"
-    for ARCH in ${arch}; do
-        compile "$ARCH"
+    arches="arm arm64 386 amd64 ppc64"
+    os_min_ver=6.1-14715
+    for arch in ${arches}; do
         supported_arches=""
-        case "$ARCH" in
+        case "$arch" in
             "arm")
-                supported_arches="$ARM5_ARCHES $ARM7_ARCHES"
-                package "$ARCH" "ipq806x northstarplus" "1.1"
+                compile "$arch" "5"
+                package "$arch"_v5 "$ARM5_ARCHES" "$os_min_ver"
 
-                supported_arches=$(echo "$supported_arches" | sed 's/ ipq806x//' | sed 's/ northstarplus//')
+                compile "$arch" "7"
+                ARM7_ARCHES=$(echo "$ARM7_ARCHES" | sed 's/ ipq806x//' | sed 's/ northstarplus//')
+                package "$arch"_v7 "$ARM7_ARCHES" "$os_min_ver"
+                # SRM
+                package "$arch"_v7 "ipq806x northstarplus" "1.1.6-6931"
                 ;;
-            "arm64")
+            "arm64") # ARMv8
+                compile "$arch"
                 supported_arches="$ARM8_ARCHES"
                 ;;
             "386")
+                compile "$arch"
                 supported_arches="$x86_ARCHES"
                 ;;
             "amd64")
+                compile "$arch"
                 supported_arches="$x64_ARCHES"
                 ;;
             "ppc64")
@@ -115,26 +127,27 @@ compileAll() {
                 exit 1
                 ;;
         esac
-        OS_MIN_VER=6.1-14715
-        package "$ARCH" "$supported_arches" "$OS_MIN_VER"
+        package "$arch" "$supported_arches" "$os_min_ver"
     done
 }
 
 ## Step 2 compile
 compile() {
-    ARCH="${1:-""}"
+    _ARCH="${1:-""}"
+    _GOARM="${2:-""}"
     if command -v go > /dev/null; then
         gofmt -s -w -- package/src/synoedit/*.go
         cd package || exit
         export GOPATH=$PWD
         cd src/synoedit || exit
         echo "go compiling ..."
-        if [ -z "$ARCH" ]; then
+        if [ -z "$_ARCH" ]; then
             go build -ldflags="-s -w" -o ../../ui/index.cgi
             # go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/synoedit/*.go
         else
             # env GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o package/ui/index.cgi -- package/src/*.go
-            env CGO_ENABLED=0 GOOS=linux GOARCH="$ARCH" go build -ldflags "-s -w" -o ../../ui/index.cgi
+            echo "GOARCH=$_ARCH GOARM=$_GOARM"
+            env CGO_ENABLED=0 GOOS=linux GOARCH="$_ARCH" GOARM="$_GOARM" go build -ldflags "-s -w" -o ../../ui/index.cgi
         fi
         cd ../../.. || edit
     else
@@ -156,9 +169,9 @@ compress() { # not recommended, slows down launch time ~0.8s
 
 ## Step 3 Compress package and create spk
 package() {
-    ARCH=${1:-native}
-    SUPP_ARCH=${2:-noarch}
-    OS_MIN_VER=${3:-6.1-14715}
+    _arch=${1:-native}
+    _supported_arches=${2:-noarch}
+    _os_min_ver=${3:-6.1-14715}
     # sha1sum="$(shell command -v sha1sum 2>/dev/null || command -v gsha1sum 2>/dev/null)"
     # sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
@@ -176,13 +189,13 @@ package() {
     ## Create checksum
     checksum=$($md5sum package.tgz | awk '{print $1}')
     sed -i '' -e "s/checksum=.*/checksum=\"${checksum}\"/" INFO
-    sed -i '' -e "s/arch=.*/arch=\"${SUPP_ARCH}\"/" INFO
-    sed -i '' -e "s/os_min_ver=.*/os_min_ver=\"${OS_MIN_VER}\"/" INFO
+    sed -i '' -e "s/arch=.*/arch=\"${_supported_arches}\"/" INFO
+    sed -i '' -e "s/os_min_ver=.*/os_min_ver=\"${_os_min_ver}\"/" INFO
     # pkg_get_spk_platform
     # pkg_get_spk_family
 
     ## Create spk
-    tar cpf synoedit-"$ARCH"-"$OS_MIN_VER".spk \
+    tar cpf synoedit-"$_arch"-"$_os_min_ver".spk \
         --exclude='node_modules' \
         --exclude='*.afdesign' \
         --exclude='*.afphoto' \
@@ -219,6 +232,8 @@ elif [ "$CMD" = "dev" ]; then
     _cp
     compile
     package
+elif [ "$CMD" = "clean" ] || [ "$CMD" = "clear" ]; then
+    clean
 else
     usage
 fi
