@@ -91,6 +91,9 @@ dependencies() {
 }
 
 compileAll() {
+    gsha256sum package/ui/database.toml
+    grep 'DefaultDatabaseSHA256Checksum =' package/src/synoedit/main.go
+
     lint
     dependencies
 

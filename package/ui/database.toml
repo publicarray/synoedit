@@ -39,6 +39,13 @@ files = [
 #     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
 #     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
 
+[app."wireguard"]
+directory = 'wireguard/target/etc'
+files = [
+    'wg0.conf',
+    'publickey'
+]
+
 ###############################
 #        SynoCommunity        #
 ###############################

@@ -34,7 +34,7 @@ const (
 	// DefaultDatabaseFileName is the main file name for database
 	DefaultDatabaseFileName = "database.toml"
 	// DefaultDatabaseSHA256Checksum is used to detect manipulation or corruption
-	DefaultDatabaseSHA256Checksum = "da745008c71cda6c993f5b448ada798978d28e0ba00e441190a9bcd17a50ad9c"
+	DefaultDatabaseSHA256Checksum = "bd35f2645b4fd233eb09a81c91ae7b456132d9a075cf0df3f9a55af9034bac8f"
 	// DefaultConfigFileName = "synoedit.toml"
 )
 
