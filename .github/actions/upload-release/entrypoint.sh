@@ -7,7 +7,7 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
   exit 1
 fi
 
-for _file in "${GITHUB_WORKSPACE}"/*; do
+for _file in "${GITHUB_WORKSPACE}"/*"$1"; do
     AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
     RELEASE_ID=$(jq --raw-output '.release.id' "$GITHUB_EVENT_PATH")
     FILENAME=$(basename "$_file")
