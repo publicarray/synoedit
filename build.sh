@@ -2,7 +2,7 @@
 
 ## Tested on macSO only! TODO: need to run this in on more OSs in docker
 
-set -u
+set -eu
 
 # https://originhelp.synology.com/developer-guide/appendix/index.html
 # https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model
