@@ -40,7 +40,7 @@ files = [
 #     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
 
 [app."wireguard"]
-directory = 'wireguard/target/etc/'
+directory = 'wireguard/target/var/'
 files = [
     'wg0.conf',
     'publickey'
