@@ -1,7 +1,6 @@
 #!/bin/sh
 
 ## Tested on macSO only! TODO: need to run this in on more OSs in docker
-
 set -eu
 
 # https://originhelp.synology.com/developer-guide/appendix/index.html
@@ -16,6 +15,29 @@ x86_ARCHES="evansport"
 x64_ARCHES="apollolake avoton braswell broadwell broadwellnk bromolow cedarview denverton dockerx64 grantley kvmx64 x86 x64 x86_64"
 # x64_ARCHES="x86 cedarview bromolow"
 
+gsha256sum() {
+     if command -v sha256sum > /dev/null; then
+        command sha256sum "$@"
+    elif command -v gsha256sum > /dev/null; then
+        command gsha256sum "$@"
+    fi
+}
+
+gmd5sum() {
+     if command -v md5sum > /dev/null; then
+        command md5sum "$@"
+    elif command -v gmd5sum > /dev/null; then
+        command gmd5sum "$@"
+    fi
+}
+
+sedi() {
+    if [ "$(uname)" = 'Darwin' ]; then
+        command sed -i '' "$@"
+    else
+        command sed -i "$@"
+    fi
+}
 usage() {
     echo "Usage:  $0 command"
     echo
@@ -194,9 +216,9 @@ package() {
 
     ## Create checksum
     checksum=$($md5sum package.tgz | awk '{print $1}')
-    sed -i '' -e "s/checksum=.*/checksum=\"${checksum}\"/" INFO
-    sed -i '' -e "s/arch=.*/arch=\"${_supported_arches}\"/" INFO
-    sed -i '' -e "s/os_min_ver=.*/os_min_ver=\"${_os_min_ver}\"/" INFO
+    sedi -e "s/checksum=.*/checksum=\"${checksum}\"/" INFO
+    sedi -e "s/arch=.*/arch=\"${_supported_arches}\"/" INFO
+    sedi -e "s/os_min_ver=.*/os_min_ver=\"${_os_min_ver}\"/" INFO
     # pkg_get_spk_platform
     # pkg_get_spk_family
 

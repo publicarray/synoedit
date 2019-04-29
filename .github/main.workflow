@@ -1,6 +1,6 @@
 workflow "Package" {
-  on = "release"
   resolves = ["Upload to release"]
+  on = "release"
 }
 
 action "Build spk" {

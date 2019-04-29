@@ -2,6 +2,7 @@
 
 set -eu
 
-./build --all
+./build.sh dependencies
+./build.sh all
 
 mv ./*.spk "${GITHUB_WORKSPACE}"/
