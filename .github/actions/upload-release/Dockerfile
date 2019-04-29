@@ -8,7 +8,8 @@ RUN apk add --no-cache \
     bash \
     ca-certificates \
     curl \
-    jq
+    jq \
+    file
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

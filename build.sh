@@ -1,6 +1,5 @@
 #!/bin/sh
 
-## Tested on macSO only! TODO: need to run this in on more OSs in docker
 set -eu
 
 # https://originhelp.synology.com/developer-guide/appendix/index.html
