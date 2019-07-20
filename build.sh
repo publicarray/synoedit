@@ -108,8 +108,13 @@ dependencies() {
 }
 
 compileAll() {
-    gsha256sum package/ui/database.toml
-    grep 'DefaultDatabaseSHA256Checksum =' package/src/synoedit/main.go
+    checksum=$(gsha256sum package/ui/database.toml | awk '{print $1}')
+    if ! grep -q "$checksum" package/src/synoedit/main.go; then
+        echo "Checksum mismatch!"
+        gsha256sum package/ui/database.toml
+        grep 'DefaultDatabaseSHA256Checksum =' package/src/synoedit/main.go
+        exit 1
+    fi
 
     lint
     dependencies
