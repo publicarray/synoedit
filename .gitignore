@@ -13,7 +13,6 @@ bundle.js
 # copied codemirror files
 codemirror.css
 package/ui/css/dialog.css
-# go dep
-package/pkg
+# go
 package/ui/codemirror/
 package/ui/test.html

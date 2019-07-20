@@ -77,12 +77,11 @@ update() {
     fi
     _cp
 
-    if command -v dep > /dev/null; then
-        cd package || exit
-        export GOPATH=$PWD
-        cd src/synoedit || exit
-        dep ensure -update
-        cd ../../../ || exit
+    if command -v go > /dev/null; then
+        go list -u -m all
+        go get -u
+        go mod vendor
+        # go get -u=patch
     fi
 }
 
@@ -98,17 +97,14 @@ dependencies() {
         fi
         _cp
     fi
-    if [ ! -d package/src/synoedit/vendor ]; then
-        if command -v dep > /dev/null; then
-            cd package || exit
-            export GOPATH=$PWD
-            cd src/synoedit || exit
-            dep ensure
-            cd ../../../ || exit
-        else
-            echo "dep (https://github.com/golang/dep) is needed for dependency management. Try brew install dep if your on macOS"
-        fi
-    fi
+    # if [ ! -d vendor ]; then
+    #     if command -v go > /dev/null; then
+    #         go mod download
+    #         go mod vendor
+    #     else
+    #         echo "go is needed for dependency management. Try brew install go if your on macOS"
+    #     fi
+    # fi
 }
 
 compileAll() {
@@ -163,9 +159,7 @@ compile() {
     _ARCH="${1:-""}"
     _GOARM="${2:-""}"
     if command -v go > /dev/null; then
-        cd package || exit
-        export GOPATH=$PWD
-        cd src/synoedit || exit
+        cd package/src/synoedit || exit
         echo "go compiling ..."
         if [ -z "$_ARCH" ]; then
             go build -ldflags="-s -w" -o ../../ui/index.cgi
@@ -243,6 +237,7 @@ lint () {
     if ! command -v golint > /dev/null || ! command -v revive > /dev/null; then
         go get -u golang.org/x/lint/golint
     fi
+    go mod tidy
 
     if command -v golint > /dev/null; then
         golint package/src/synoedit/*.go
