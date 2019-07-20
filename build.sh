@@ -227,8 +227,12 @@ package() {
         --exclude='package' \
         --exclude='*.sh' \
         --exclude='*.spk' \
+        --exclude='synoedit-*' \
         --exclude='*.log' \
         --exclude='.git' \
+        --exclude='go.mod' \
+        --exclude='go.sum' \
+        --exclude='vendor' \
         -- *
 }
 
