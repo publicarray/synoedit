@@ -18,10 +18,10 @@ fixLinks() {
 
 if [ ! -d test ]; then
     echo "Preparing test folder.."
-    mkdir -p test/dnscrypt-proxy/target/var
+    mkdir -p test/var/packages/dnscrypt-proxy/target/var
 fi
 
-echo "example.com" > test/dnscrypt-proxy/target/var/domains-whitelist.txt
+echo "example.com" > test/var/packages/dnscrypt-proxy/target/var/domains-whitelist.txt
 
 ## lint
 # gofmt -s -w cgi.go

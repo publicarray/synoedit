@@ -17,7 +17,7 @@ cd synoedit/package/src/synoedit
 go build -ldflags="-s -w" -o ../../ui/index.cgi
 # Run the binary
 go run . -h
-env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET go run . -dev -config ../../ui/database.toml
+env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET go run . -dev -config ../../ui/database.toml -layout ../../ui/layout.html
 # or
 cd ../../ui/
 env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET ./index.cgi --dev > test.html

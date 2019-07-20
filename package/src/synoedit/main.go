@@ -33,6 +33,8 @@ const (
 	AppVersion = "0.0.6"
 	// DefaultDatabaseFileName is the main file name for database
 	DefaultDatabaseFileName = "database.toml"
+	// DefaultLayoutFileName is the html template for the http repose
+	DefaultLayoutFileName = "layout.html"
 	// DefaultDatabaseSHA256Checksum is used to detect manipulation or corruption
 	DefaultDatabaseSHA256Checksum = "9ccb7b2b0b975c004d9144d366660dcf43862ded85806a449f7612c5a220170d"
 	// DefaultConfigFileName = "synoedit.toml"
@@ -51,10 +53,10 @@ type Page struct {
 }
 
 // Return HTML from layout.html.
-func renderHTML(fileData string, successMessage string, errorMessage string) {
+func renderHTML(layoutFile *string, fileData string, successMessage string, errorMessage string) {
 	var page Page
 
-	tmpl, err := template.ParseFiles("layout.html")
+	tmpl, err := template.ParseFiles(*layoutFile)
 	if err != nil {
 		logError(err.Error())
 	}
@@ -86,6 +88,7 @@ func main() {
 
 	dev = flag.Bool("dev", false, "Turns Authentication checks off")
 	configFile := flag.String("config", DefaultDatabaseFileName, "Path to the configuration file")
+	layoutFile := flag.String("layout", DefaultLayoutFileName, "Path to the layout file")
 	flag.Parse()
 
 	if err := ConfigLoad(configFile); err != nil {
@@ -103,7 +106,7 @@ func main() {
 		rootDir = pwd + "/test/"
 	} else { // production environment
 		auth()
-		rootDir = "/var/packages/"
+		rootDir = ""
 	}
 
 	// Retrieve Form Values
@@ -130,7 +133,7 @@ func main() {
 			if ajax == "true" {
 				jsonMessage(0, output)
 			}
-			renderHTML(fileData, "Not implemented", "")
+			renderHTML(layoutFile, fileData, "Not implemented", "")
 		}
 
 		if fileData != "" && appName != "" && fileName != "" {
@@ -140,7 +143,7 @@ func main() {
 			if ajax == "true" {
 				jsonMessage(0, "File saved successfully!")
 			}
-			renderHTML(fileData, "File saved successfully!", "") // not complete
+			renderHTML(layoutFile, fileData, "File saved successfully!", "") // not complete
 		}
 		logError("No valid data submitted.")
 	}
@@ -155,8 +158,8 @@ func main() {
 			jsonMessage(0, fileData)
 		}
 		// else respond with full html
-		renderHTML(fileData, "", "") // not complete
+		renderHTML(layoutFile, fileData, "", "") // not complete
 	}
 
-	renderHTML("", "", "")
+	renderHTML(layoutFile, "", "", "")
 }
