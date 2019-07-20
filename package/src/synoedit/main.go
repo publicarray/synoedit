@@ -30,7 +30,7 @@ import (
 
 const (
 	// AppVersion is the Program Version
-	AppVersion = "0.0.5"
+	AppVersion = "0.0.6"
 	// DefaultDatabaseFileName is the main file name for database
 	DefaultDatabaseFileName = "database.toml"
 	// DefaultDatabaseSHA256Checksum is used to detect manipulation or corruption

@@ -13,12 +13,12 @@ Synology package for editing files through a web interface
 
 ```sh
 git clone https://github.com/publicarray/synoedit.git
-cd synoedit/package
-export GOPATH=$PWD
-cd src/synoedit
-dep ensure
+cd synoedit/package/src/synoedit
 go build -ldflags="-s -w" -o ../../ui/index.cgi
 # Run the binary
+go run . -h
+env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET go run . -dev -config ../../ui/database.toml
+# or
 cd ../../ui/
 env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET ./index.cgi --dev > test.html
 ```
