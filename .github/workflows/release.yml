@@ -1,0 +1,16 @@
+on: release
+name: Package
+jobs:
+  buildSpk:
+    name: Build spk
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build spk
+      uses: ./.github/actions/build
+    - name: Upload to release
+      uses: ./.github/actions/upload-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: spk
