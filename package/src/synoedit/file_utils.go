@@ -21,7 +21,6 @@ package main
 import (
 	"io/ioutil"
 	"os"
-	"syscall"
 )
 
 // FileExists returns true if the file path exists.
@@ -59,7 +58,7 @@ func SaveFile(file string, data string) {
 	}
 
 	// Get stat structure (for uid and gid)
-	stat := fInfo.Sys().(*syscall.Stat_t)
+	// stat := fInfo.Sys().(*syscall.Stat_t)
 
 	// Create file
 	f, err := os.Create(file + ".tmp")
