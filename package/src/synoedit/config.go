@@ -22,11 +22,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/BurntSushi/toml"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/BurntSushi/toml"
 )
 
 // Config holds the configuration for many Applications specified in the toml database
