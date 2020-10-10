@@ -121,7 +121,7 @@ compileAll() {
 
     ## match arches to go build arches:
     arches="arm arm64 386 amd64 ppc64"
-    os_min_ver=6.1-14715
+    os_min_ver=7.0-4000
     for arch in ${arches}; do
         supported_arches=""
         case "$arch" in
@@ -197,7 +197,7 @@ compress() { # not recommended, slows down launch time ~0.8s
 package() {
     _arch=${1:-native}
     _supported_arches=${2:-noarch}
-    _os_min_ver=${3:-6.1-14715}
+    _os_min_ver=${3:-7.0-4000}
     # sha1sum="$(shell command -v sha1sum 2>/dev/null || command -v gsha1sum 2>/dev/null)"
     # sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
@@ -235,6 +235,7 @@ package() {
         --exclude='synoedit-*' \
         --exclude='*.log' \
         --exclude='.git' \
+        --exclude='.github' \
         --exclude='go.mod' \
         --exclude='go.sum' \
         --exclude='vendor' \

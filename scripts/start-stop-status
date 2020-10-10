@@ -1,6 +1,10 @@
 #!/bin/sh
 
 case $1 in
+    prestart)
+        ;;
+    prestop)
+        ;;
     start)
         exit 0
         ;;
@@ -9,6 +13,8 @@ case $1 in
         ;;
     status)
         exit 0
+        ;;
+    killall)
         ;;
     log)
         exit 0

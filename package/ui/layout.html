@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>{{.Title}}</title>
         <link rel="stylesheet" type="text/css" href="/webman/3rdparty/synoedit/css/style.css">
+        <!-- <script src="/webman/dsmtoken.cgi"></script> -->
     </head>
     <body>
         <div class="message">
@@ -69,6 +70,12 @@
             var configFiles = {{ .Applications }}
             var dev = {{ .DevEnvironment }}
             // configFiles = JSON.parse(configFiles)
+
+            // Ext.Ajax.Request({ ... }) // add SynoToken at event 'beforerequest'
+            // Ext.data.Connection({ ... }) // add SynoToken at event 'beforerequet'
+            // new Ext.form.basicForm({ ... }) // add SynoToken at event 'beforeaction'
+            // // Ext.urlAppend will add SynoToken internally
+            // url = Ext.urlAppend('http://192.168.1.1', Ext.urlEncode({ ... }));
         </script>
         <script src="/webman/3rdparty/synoedit/codemirror/lib/codemirror.js"></script>
 
