@@ -52,10 +52,10 @@ func ReadFile(file string) string {
 // SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
 	// If file exists get file info struct
-	fInfo, err := os.Stat(file)
-	if err != nil {
-		logError(err.Error())
-	}
+	// fInfo, err := os.Stat(file)
+	// if err != nil {
+	// 	logError(err.Error())
+	// }
 
 	// Get stat structure (for uid and gid)
 	// stat := fInfo.Sys().(*syscall.Stat_t)

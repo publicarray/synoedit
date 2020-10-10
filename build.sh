@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# example: ./build.sh compile amd64;  ./build.sh package amd64 apollolake 7.0-4000
+
 set -eu
 
 # https://originhelp.synology.com/developer-guide/appendix/index.html
@@ -285,7 +287,8 @@ elif [ "$CMD" = "compile" ]; then
     _cp
     compile "$BUILD_ARCH"
 elif [ "$CMD" = "package" ]; then
-    package
+    shift
+    package "$@"
 elif [ "$CMD" = "dev" ]; then
     _cp
     compile
