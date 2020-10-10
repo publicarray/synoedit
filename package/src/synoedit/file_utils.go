@@ -72,7 +72,7 @@ func SaveFile(file string, data string) {
 		logError(err.Error())
 	}
 	// set owner and group id
-	f.Chown(int(stat.Uid), int(stat.Gid))
+	// f.Chown(int(stat.Uid), int(stat.Gid))
 	f.Sync()
 
 	err = os.Rename(file+".tmp", file) // atomic
