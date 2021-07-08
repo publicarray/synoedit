@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "codemirror": "^5.58.2"
+    "codemirror": "^5.62.0"
   },
   "devDependencies": {},
   "name": "synoedit",
