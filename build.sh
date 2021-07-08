@@ -223,7 +223,7 @@ package() {
     # pkg_get_spk_family
 
     ## Create spk
-    cp LICENSE.md LICENSE
+
     tar cpf synoedit-"$_arch"-"$_os_min_ver".spk \
         --exclude='node_modules' \
         --exclude='*.afdesign' \

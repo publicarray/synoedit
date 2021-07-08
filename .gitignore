@@ -5,7 +5,6 @@
 *.spk
 *.log
 
-LICENSE
 # npm dependencies
 node_modules
 # test output directory
