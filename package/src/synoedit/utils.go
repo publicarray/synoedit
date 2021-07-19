@@ -28,8 +28,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type VersionProperties map[string]string
-
+// OSVersionRaw holds raw content from the /etc.defaults/VERSION file
 type OSVersionRaw struct {
 	Major          string
 	Minor          string
@@ -41,6 +40,7 @@ type OSVersionRaw struct {
 	Buildphase     string
 }
 
+// OSVersion contains the version information from the OS (OSVersionRaw)
 type OSVersion struct {
 	Major          int64
 	Minor          int64
@@ -52,6 +52,7 @@ type OSVersion struct {
 	Buildphase     string
 }
 
+// StrToInt converts a String to an Integer
 func StrToInt(str string) int64 {
 	str = strings.TrimSpace(strings.Trim(str, "\"'"))
 	if str == "" {
@@ -65,6 +66,7 @@ func StrToInt(str string) int64 {
 	return num
 }
 
+// StrToFloat converts a String to a Float
 func StrToFloat(str string) float64 {
 	str = strings.TrimSpace(strings.Trim(str, "\"'"))
 	if str == "" {
@@ -78,6 +80,7 @@ func StrToFloat(str string) float64 {
 	return num
 }
 
+// GetOSVersion retrieves the Operating System version and build numbers from a Synology device
 func GetOSVersion() OSVersion {
 	var verRaw OSVersionRaw
 	var ver OSVersion
@@ -92,7 +95,6 @@ func GetOSVersion() OSVersion {
 	ver.Smallfixnumber = StrToInt(verRaw.Smallfixnumber)
 	ver.Buildnumber = StrToInt(verRaw.Buildnumber)
 	return ver
-
 }
 
 // GetFilePath returns the complete file path given the App and file name
@@ -108,9 +110,8 @@ func GetFilePath(appName string, fileName string) string {
 					}
 					if ver.Major >= 7 {
 						return "/var/packages/" + appName + "/var/" + fileName
-					} else {
-						return "/var/packages/" + appName + "/target/var/" + fileName
 					}
+					return "/var/packages/" + appName + "/target/var/" + fileName
 				}
 
 				return rootDir + app.Directory + fileName
