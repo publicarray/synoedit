@@ -99,14 +99,15 @@ dependencies() {
         fi
         _cp
     fi
-    # if [ ! -d vendor ]; then
-    #     if command -v go > /dev/null; then
-    #         go mod download
-    #         go mod vendor
-    #     else
-    #         echo "go is needed for dependency management. Try brew install go if your on macOS"
-    #     fi
-    # fi
+    if [ ! -d vendor ]; then
+        if command -v go > /dev/null; then
+            # go get github.com/BurntSushi/toml
+            go mod download
+            go mod vendor
+        else
+            echo "go not found! go is needed for this project."
+        fi
+    fi
 }
 
 checksum_database(){
