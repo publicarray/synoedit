@@ -47,7 +47,7 @@ type OSVersion struct {
 	Macro          int64
 	Nano           int64
 	Smallfixnumber int64
-	Productversion float64
+	Productversion string
 	Buildnumber    int64
 	Buildphase     string
 }
@@ -90,7 +90,6 @@ func GetOSVersion() OSVersion {
 	ver.Macro = StrToInt(verRaw.Macro)
 	ver.Nano = StrToInt(verRaw.Nano)
 	ver.Smallfixnumber = StrToInt(verRaw.Smallfixnumber)
-	ver.Productversion = StrToFloat(verRaw.Productversion)
 	ver.Buildnumber = StrToInt(verRaw.Buildnumber)
 	return ver
 
