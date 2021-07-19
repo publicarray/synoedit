@@ -36,7 +36,7 @@ const (
 	// DefaultLayoutFileName is the html template for the http repose
 	DefaultLayoutFileName = "layout.html"
 	// DefaultDatabaseSHA256Checksum is used to detect manipulation or corruption
-	DefaultDatabaseSHA256Checksum = "304c61184b55fc5483a29d1af509ed07a3cd8f5efcbf1617c8972c3cc88a79f5"
+	DefaultDatabaseSHA256Checksum = "0fe51ea6c969605d772339a3ae5ee36089334bf5640b2fa952817bbd026a8e17"
 	// DefaultConfigFileName = "synoedit.toml"
 )
 

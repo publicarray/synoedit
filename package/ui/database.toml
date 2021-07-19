@@ -88,6 +88,44 @@ files = [
     "config/secrets.yaml"
 ]
 
+[app."umurmur"]
+files = [
+    "umurmur.conf",
+    "umurmur.crt",
+    "umurmur.key",
+    "umurmur.log",
+]
+
+[app."znc"]
+files = [
+    "configs/znc.conf", # still need permissions to r+w
+    "configs/oidentd.conf",
+    "znc.pem", # still need permissions to r+w
+    "znc.log"
+]
+
+[app."icecast"]
+files = [
+    "icecast.xml",
+    "icecast.log"
+]
+
+[app."radarr"]
+files = [
+    ".config/Radarr/config.xml"
+]
+
+[app."sonarr"]
+files = [
+    ".config/Sonarr/config.xml"
+]
+
+[app."transmission"]
+files = [
+    "settings.json", # still need permissions to r+w
+    "transmission.log"
+]
+
 ##########################
 #        Examples        #
 ##########################
@@ -179,22 +217,6 @@ files = [
 #     "squidguardmgr.conf",
 # ]
 
-[app."umurmur"]
-files = [
-    "umurmur.conf",
-    "umurmur.crt",
-    "umurmur.key",
-    "umurmur.log",
-]
-
-[app."znc"]
-files = [
-    "configs/znc.conf", # still need permissions to r+w
-    "configs/oidentd.conf",
-    "znc.pem", # still need permissions to r+w
-    "znc.log"
-]
-
 # [app."flexget"]
 # files = [
 #     "config.yml"
@@ -205,32 +227,12 @@ files = [
 #     "parameters.yml"
 # ]
 
-[app."icecast"]
-files = [
-    "icecast.xml",
-    "icecast.log"
-]
 
 # [app."museek-plus"]
 # files = [
 #     "config.xml"
 # ]
 
-[app."radarr"]
-files = [
-    ".config/Radarr/config.xml"
-]
-
-[app."sonarr"]
-files = [
-    ".config/Sonarr/config.xml"
-]
-
-[app."transmission"]
-files = [
-    "settings.json", # still need permissions to r+w
-    "transmission.log"
-]
 # [app."plexpy"]
 # files = [
 #     "config.ini"

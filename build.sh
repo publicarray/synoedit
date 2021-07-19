@@ -120,6 +120,15 @@ checksum_database(){
     fi
 }
 
+checksum_database_fix() {
+    sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
+    checksum=$($sha256sum package/ui/database.toml | awk '{print $1}')
+    if ! grep -q "$checksum" package/src/synoedit/main.go; then
+        echo "Checksum mismatch! Fixing..."
+        sedi -e "s/DefaultDatabaseSHA256Checksum\s*=.*/DefaultDatabaseSHA256Checksum = \"${checksum}\"/" package/src/synoedit/main.go
+    fi
+}
+
 compileAll() {
     checksum_database
     lint
@@ -127,7 +136,7 @@ compileAll() {
 
     ## match arches to go build arches:
     arches="arm arm64 386 amd64 ppc64"
-    os_min_ver=7.0-4000
+    os_min_ver="${1:-"7.0-4000"}"
     for arch in ${arches}; do
         supported_arches=""
         case "$arch" in
@@ -205,6 +214,7 @@ package() {
     _arch=${1:-native}
     _supported_arches=${2:-noarch}
     _os_min_ver=${3:-7.0-4000}
+
     # sha1sum="$(shell command -v sha1sum 2>/dev/null || command -v gsha1sum 2>/dev/null)"
     # sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
@@ -287,7 +297,8 @@ elif [ "$CMD" = "dependencies" ] || [ "$CMD" = "javascript" ] || [ "$CMD" = "yar
     dependencies
 elif [ "$CMD" = "all" ]; then
     _cp
-    compileAll
+    compileAll 7.0-4000
+    compileAll 6.1-14715
     compile
 elif [ "$CMD" = "compile" ]; then
     _cp
@@ -297,6 +308,7 @@ elif [ "$CMD" = "package" ]; then
     package "$@"
 elif [ "$CMD" = "dev" ]; then
     _cp
+    checksum_database_fix
     compile
     package
 elif [ "$CMD" = "clean" ] || [ "$CMD" = "clear" ]; then
@@ -305,6 +317,11 @@ elif [ "$CMD" = "lint" ]; then
     lint
 elif [ "$CMD" = "test" ]; then
     test
+elif [ "$CMD" = "build" ]; then
+    checksum_database_fix
+    compile amd64
+    package amd64 "${x64_ARCHES}" 6.1-14715
+    package amd64 "${x64_ARCHES}" 7.0-4000
 else
     usage
 fi
