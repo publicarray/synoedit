@@ -12,6 +12,7 @@
 # The final file path is '/var/packages/' + directory + files[i]
 files = [
     'dnscrypt-proxy.toml',
+    'dnscrypt-proxy.log',
     'blocklist-names.txt',
     'blocklist-ips.txt',
     'cloaking-rules.txt',
