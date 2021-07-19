@@ -14,6 +14,7 @@ Synology package for editing files through a web interface
 git clone https://github.com/publicarray/synoedit && cd synoedit
 ./build all # builds all available versions/architectures
 ./build amd64 # alias to build amd64 architecture only for both DSM6 and DSM7 (good for development)
+./build help # see all options
 ```
 
 ## Build manually
