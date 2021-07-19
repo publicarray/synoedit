@@ -49,7 +49,7 @@ func ReadFile(file string) string {
 	return ""
 }
 
-// Make folder if it doesn't exist (DSM6)
+// Make folder if it doesn't exist
 func mkdir(path string) {
 	stat, err := os.Stat(path)
 	if err != nil {
@@ -83,7 +83,7 @@ func SaveFile(file string, data string) {
 	}
 
 	// Create file
-	mkdir(path)
+	mkdir(path) // (DSM6)
 	tmpFile, err := ioutil.TempFile(path, "*.txt")
 	if err != nil {
 		logError("Cannot create temporary file", err.Error())
