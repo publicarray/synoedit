@@ -49,6 +49,7 @@ func ReadFile(file string) string {
 	return ""
 }
 
+// Make folder if it doesn't exist (DSM6)
 func mkdir(path string) {
 	stat, err := os.Stat(path)
 	if err != nil {
@@ -69,7 +70,6 @@ func mkdir(path string) {
 
 // SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
-	// https://github.com/natefinch/atomic/blob/master/atomic.go
 	// If file exists get file info struct
 	fInfo, err := os.Stat(file)
 	if err != nil {
@@ -91,11 +91,7 @@ func SaveFile(file string, data string) {
 	defer os.Remove(tmpFile.Name())
 	defer tmpFile.Close()
 
-	// f, err := os.Create(os.TempDir()/".tmp")
-	// if err != nil {
-	// 	logError(err.Error())
-	// }
-	// defer f.Close()
+	// Write Data
 	if _, err = tmpFile.WriteString(data); err != nil {
 		logError(err.Error())
 	}
@@ -121,6 +117,7 @@ func SaveFile(file string, data string) {
 	// 	logError(err.Error())
 	// }
 
+	// Set original permissions
 	// if err := os.Chmod(tmpFile.Name(), 0664); err != nil {
 	if err := os.Chmod(tmpFile.Name(), fInfo.Mode()); err != nil {
 		logError(err.Error())
