@@ -43,19 +43,19 @@ usage() {
     echo "Usage:  $0 command"
     echo
     echo "Commands:"
-    echo "  compress       compresses compiled binary with upx"
-    echo "  update         update dependencies with yarn or npm"
-    echo "  dependencies   installs npm and go dependencies (yarn/npm and dep)"
-    echo "  all            Compiles go project for all architectures"
-    echo "  compile        compile go project"
-    echo "  package        create spk"
-    echo "  dev            runs '_cp', 'compile' and 'package' commands"
-    echo "  clean|clear    remove all *spk files"
-    echo "  lint           lint code"
-    echo "  test           run a simple test"
+    echo "  compress                                        compresses compiled binary with upx"
+    echo "  update                                          update dependencies with yarn or npm"
+    echo "  dependencies                                    installs npm and go dependencies (yarn/npm and dep)"
+    echo "  all                                             compiles go project for all architectures and DSM6/7 versions"
+    echo "  compile [arch]                                  compile go project: e.g. compile amd64"
+    echo "  package [arch] [syno_arch] [min_dsm_version]    create spk e.g. package amd64 broadwell 6.1-14715"
+    echo "  dev                                             runs '_cp', 'compile' and 'package' commands using the native platform"
+    echo "  clean|clear                                     remove all *spk files"
+    echo "  lint                                            lint code"
+    echo "  test                                            run a simple test"
+    echo "  amd64                                           alias to compile and package for amd64 only, good for quick development"
     echo ""
 }
-
 _cp() {
     mkdir -p package/ui/codemirror/theme/
     cp -r node_modules/codemirror/addon package/ui/codemirror/
@@ -220,7 +220,8 @@ package() {
     md5sum="$(shell command -v md5sum 2>/dev/null || command -v gmd5sum 2>/dev/null)"
 
     ## Create package.tgz
-    tar cvfz package.tgz --exclude='src' \
+    echo "tar cpf package.tgz"
+    tar cfz package.tgz --exclude='src' \
         --exclude="pkg" \
         --exclude='ui/test' \
         --exclude='ui/test.sh' \
@@ -239,6 +240,7 @@ package() {
 
     ## Create spk
 
+    echo "tar cpf $_arch-$_os_min_ver.spk"
     tar cpf synoedit-"$_arch"-"$_os_min_ver".spk \
         --exclude='node_modules' \
         --exclude='*.afdesign' \
@@ -317,7 +319,8 @@ elif [ "$CMD" = "lint" ]; then
     lint
 elif [ "$CMD" = "test" ]; then
     test
-elif [ "$CMD" = "build" ]; then
+elif [ "$CMD" = "amd64" ]; then
+    _cp
     checksum_database_fix
     compile amd64
     package amd64 "${x64_ARCHES}" 6.1-14715

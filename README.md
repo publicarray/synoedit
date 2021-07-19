@@ -8,6 +8,13 @@ Synology package for editing files through a web interface
 ![screen shot](https://user-images.githubusercontent.com/5497998/41282074-7e3f81f6-6e76-11e8-8436-0187282b1b87.png)
 ![screen shot](https://user-images.githubusercontent.com/5497998/41282242-f7290420-6e76-11e8-81da-43769de7a269.png)
 
+## Build using script
+
+```sh
+git clone https://github.com/publicarray/synoedit && cd synoedit
+./build all # builds all available versions/architectures
+./build amd64 # alias to build amd64 architecture only for both DSM6 and DSM7 (good for development)
+```
 
 ## Build manually
 
@@ -22,7 +29,6 @@ env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET go run . -dev -config ../../ui/d
 cd ../../ui/
 env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET ./index.cgi --dev > test.html
 ```
-
 
 ## Add package support
 
