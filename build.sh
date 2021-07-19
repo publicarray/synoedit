@@ -109,15 +109,19 @@ dependencies() {
     # fi
 }
 
-compileAll() {
-    checksum=$(gsha256sum package/ui/database.toml | awk '{print $1}')
+checksum_database(){
+    sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
+    checksum=$(sha256sum package/ui/database.toml | awk '{print $1}')
     if ! grep -q "$checksum" package/src/synoedit/main.go; then
         echo "Checksum mismatch!"
-        gsha256sum package/ui/database.toml
+        sha256sum package/ui/database.toml
         grep 'DefaultDatabaseSHA256Checksum =' package/src/synoedit/main.go
         exit 1
     fi
+}
 
+compileAll() {
+    checksum_database
     lint
     dependencies
 
@@ -165,6 +169,7 @@ compileAll() {
 compile() {
     _ARCH="${1:-""}"
     _GOARM="${2:-""}"
+    checksum_database
     if command -v go > /dev/null; then
         cd package/src/synoedit || exit
         echo "go compiling ..."

@@ -4,43 +4,45 @@
 # The path where the configuration files live.
 # The purpose of this setting is to hide the path in the GUI
 # Use absolute paths only
-directory = '/var/packages/dnscrypt-proxy/target/var/'
+# Optional since the default is /var/packages/{PACKAGE NAME}/var/ for DSM7
+# Optional since the default is /var/packages/{PACKAGE NAME}/target/var/ for DSM6
+#directory = '/var/packages/dnscrypt-proxy/var/'
 
 # List of configuration files
 # The final file path is '/var/packages/' + directory + files[i]
 files = [
     'dnscrypt-proxy.toml',
-    'blacklist.txt',
-    'ip-blacklist.txt',
+    'blocklist-names.txt',
+    'blocklist-ips.txt',
     'cloaking-rules.txt',
     'forwarding-rules.txt',
-    'whitelist.txt',
-    'domains-blacklist.conf',
-    'domains-whitelist.txt',
+    'allowed-names.txt',
+    'allowed-ips.txt',
+    'domains-blocklist.conf',
     'domains-time-restricted.txt',
-    'domains-blacklist-local-additions.txt'
+    'domains-blocklist-local-additions.txt',
+    'nx.log',
+    'query.log'
 ]
 
 # Applications can have one executable action
 # Optionally the output of the command can be saved to a file
 [app."dnscrypt-proxy".action]
     # Name of the button. I Recommend naming it with an action
-    button_label = "Generate Blacklist"
+    button_label = "Generate Blocklist"
     # Executable path
     exec = "python"
     # Arguments
-    args = ["/var/packages/dnscrypt-proxy/target/var/generate-domains-blacklist.py"]
+    args = ["generate-domains-blocklist.py"]
     # Directory to change to before running the command
-    dir = "/var/packages/dnscrypt-proxy/target/var"
     # A file where the output is saved to. Must be a file from the previously set "files" option
-    out-file = "blacklist.txt"
+    out-file = "blocklist.txt"
 # [app."dnscrypt-proxy".action]
 #     button_label = "Check config file"
 #     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
 #     args = ["-check", "-config", "/var/packages/dnscrypt-proxy/target/var/dnscrypt-proxy.toml"]
 
 [app."wireguard"]
-directory = '/var/packages/wireguard/target/var/'
 files = [
     'wg0.conf',
     'publickey'
@@ -50,33 +52,28 @@ files = [
 #        SynoCommunity        #
 ###############################
 [app."git"]
-directory = "/var/packages/git/target/var/"
 files = [
     "gitconfig"
 ]
 
 [app."monit"]
-directory = '/var/packages/monit/target/var/'
 files = [
     'monitrc',
     'monit.d/monit'
 ]
 
 [app."sslh"]
-directory = "/var/packages/sslh/target/var/"
 files = [
     "sslh.cfg"
 ]
 
 [app."syncthing"]
-directory = "/var/packages/syncthing/target/var/"
 files = [
     "options.conf",
     "config.xml"
 ]
 
 [app."i2pd"]
-directory = "/var/packages/i2pd/target/var/"
 files = [
     "i2pd.conf"
 ]
@@ -113,68 +110,57 @@ files = [
 # ]
 
 # [app."haproxy"]
-# directory = "/var/packages/haproxy/target/var/"
 # files = [
 #     "haproxy.cfg"
 # ]
 
 # [app."bitlbee"]
-# directory = "/var/packages/bitlbee/target/var/"
 # files = [
 #     "bitlbee.conf"
 # ]
 
 # [app."couchpotatoserver"]
-# directory = "/var/packages/couchpotatoserver/target/var/"
 # files = [
 #     "settings.conf"
 # ]
 
 # [app."deluge"]
-# directory = "/var/packages/deluge/target/var/"
 # files = [
 #     "core.conf"
 # ]
 
 # [app."gateone"]
-# directory = "/var/packages/gateone/target/var/"
 # files = [
 #     "90custom.conf",
 #     "95users.conf"
 # ]
 
 # [app."lirc"]
-# directory = "/var/packages/lirc/target/var/"
 # files = [
 #     "lircd.conf"
 # ]
 
 # [app."mosquitto"]
-# directory = "/var/packages/mosquitto/target/var/"
 # files = [
 #     "mosquitto.conf"
 # ]
 
 # [app."oscam"]
-# directory = "/var/packages/oscam/target/var/"
 # files = [
 #     "oscam.conf"
 # ]
 
 # [app."redis"]
-# directory = "/var/packages/redis/target/var/"
 # files = [
 #     "redis.conf"
 # ]
 
 # [app."shairport-sync"]
-# directory = "/var/packages/shairport-sync/target/var/"
 # files = [
 #     "alsa.conf"
 # ]
 
 # [app."squidguard"]
-# directory = "/var/packages/squidguard/target/var/"
 # files = [
 #     "c-icap.conf",
 #     "mime.conf",
@@ -184,103 +170,91 @@ files = [
 # ]
 
 # [app."umurmur"]
-# directory = "/var/packages/umurmur/target/var/"
 # files = [
 #     "umurmur.conf"
 # ]
 
 # [app."znc"]
-# directory = "/var/packages/znc/target/var/"
 # files = [
 #     "znc.conf"
 # ]
 
 # [app."flexget"]
-# directory = "/var/packages/flexget/target/var/"
 # files = [
 #     "config.yml"
 # ]
 
 # [app."wallabag"]
-# directory = "/var/packages/wallabag/target/var/"
 # files = [
 #     "parameters.yml"
 # ]
 
 # [app."icecast"]
-# directory = "/var/packages/icecast/target/var/"
 # files = [
 #     "icecast.xml"
 # ]
 
 # [app."museek-plus"]
-# directory = "/var/packages/museek-plus/target/var/"
 # files = [
 #     "config.xml"
 # ]
 
-# [app."radarr"]
-# directory = "/var/packages/radarr/target/var/"
-# files = [
-#     "config.xml"
-# ]
+[app."radarr"]
+files = [
+    "config.xml"
+]
 
-# [app."sonarr"]
-# directory = "/var/packages/sonarr/target/var/"
-# files = [
-#     "config.xml"
-# ]
+[app."sonarr"]
+files = [
+    "config.xml"
+]
 
+[app."Transmission"]
+files = [
+    "settings.json",
+    "transmission.log"
+]
 # [app."plexpy"]
-# directory = "/var/packages/plexpy/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."headphones"]
-# directory = "/var/packages/headphones/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."sickrage"]
-# directory = "/var/packages/sickrage/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."lazylibrarian"]
-# directory = "/var/packages/lazylibrarian/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."sabnzbd"]
-# directory = "/var/packages/sabnzbd/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."comskip"]
-# directory = "/var/packages/comskip/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."mylar"]
-# directory = "/var/packages/mylar/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."plexivity"]
-# directory = "/var/packages/plexivity/target/var/"
 # files = [
 #     "config.ini"
 # ]
 
 # [app."ffsync"]
-# directory = "/var/packages/ffsync/target/var/"
 # files = [
 #     "ffsync.ini"
 # ]

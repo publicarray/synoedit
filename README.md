@@ -22,3 +22,26 @@ env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET go run . -dev -config ../../ui/d
 cd ../../ui/
 env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET ./index.cgi --dev > test.html
 ```
+
+
+## Add package support
+
+1. Add your package to the synocommunity group
+
+    for synocommunity packages add `SPK_GROUP=synocommunity` to your `Makefile` Otherwise add it to your `privilege` file
+
+    ```json
+    {
+    "defaults": {
+        "run-as": "package"
+    },
+    "username": "<your-package-name>",
+    "groupname": "synocommunity"
+    }
+    ```
+
+2. In the `postinstall` script add group read and write permissions for the files you want to add support for
+
+```sh
+chmod g+rw -R "$SYNOPKG_PKGVAR"
+```

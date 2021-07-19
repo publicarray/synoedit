@@ -20,14 +20,97 @@ package main
 
 import (
 	"bytes"
+	"math"
 	"os/exec"
+	"strconv"
+	"strings"
+
+	"github.com/BurntSushi/toml"
 )
+
+type VersionProperties map[string]string
+
+type OSVersionRaw struct {
+	Major          string
+	Minor          string
+	Macro          string
+	Nano           string
+	Smallfixnumber string
+	Productversion string
+	Buildnumber    string
+	Buildphase     string
+}
+
+type OSVersion struct {
+	Major          int64
+	Minor          int64
+	Macro          int64
+	Nano           int64
+	Smallfixnumber int64
+	Productversion float64
+	Buildnumber    int64
+	Buildphase     string
+}
+
+func StrToInt(str string) int64 {
+	str = strings.TrimSpace(strings.Trim(str, "\"'"))
+	if str == "" {
+		return -1
+	}
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		logError(err.Error())
+		return -1
+	}
+	return num
+}
+
+func StrToFloat(str string) float64 {
+	str = strings.TrimSpace(strings.Trim(str, "\"'"))
+	if str == "" {
+		return math.NaN()
+	}
+	num, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		logError(err.Error())
+		return math.NaN()
+	}
+	return num
+}
+
+func GetOSVersion() OSVersion {
+	var verRaw OSVersionRaw
+	var ver OSVersion
+	VersionRaw := ReadFile("/etc.defaults/VERSION")
+	if _, err := toml.Decode(VersionRaw, &verRaw); err != nil {
+		logError(err.Error())
+	}
+	ver.Major = StrToInt(verRaw.Major)
+	ver.Minor = StrToInt(verRaw.Minor)
+	ver.Macro = StrToInt(verRaw.Macro)
+	ver.Nano = StrToInt(verRaw.Nano)
+	ver.Smallfixnumber = StrToInt(verRaw.Smallfixnumber)
+	ver.Productversion = StrToFloat(verRaw.Productversion)
+	ver.Buildnumber = StrToInt(verRaw.Buildnumber)
+	return ver
+
+}
 
 // GetFilePath returns the complete file path given the App and file name
 func GetFilePath(appName string, fileName string) string {
 	if app, exists := config.Applications[appName]; exists {
 		for _, file := range app.Files {
 			if file == fileName {
+
+				if app.Directory == "" {
+					ver := GetOSVersion()
+					if ver.Major >= 7 {
+						return "/var/packages/" + appName + "/var/" + fileName
+					} else {
+						return "/var/packages/" + appName + "/target/var/" + fileName
+					}
+				}
+
 				return rootDir + app.Directory + fileName
 			}
 		}
@@ -58,6 +141,14 @@ func ExecuteAction(appName string) string {
 
 		var stderr bytes.Buffer
 		cmd := exec.Command(app.Action.Exec, app.Action.Args...)
+		if app.Action.Dir == "" {
+			ver := GetOSVersion()
+			if ver.Major >= 7 {
+				app.Action.Dir = "/var/packages/" + appName + "/var/"
+			} else {
+				app.Action.Dir = "/var/packages/" + appName + "/target/var/"
+			}
+		}
 		cmd.Dir = app.Action.Dir
 		cmd.Stderr = &stderr
 		stdout, err := cmd.Output()
@@ -68,7 +159,7 @@ func ExecuteAction(appName string) string {
 			filePath := GetFilePath(appName, app.Action.OutputFile)
 			SaveFile(filePath, string(stdout))
 		}
-		return string(stdout) + string(stderr.Bytes())
+		return string(stdout) + stderr.String()
 	}
 	logError("App not found in configuration!")
 	return ""
