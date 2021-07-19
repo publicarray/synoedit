@@ -79,5 +79,4 @@ func SaveFile(file string, data string) {
 		logError(err.Error())
 	}
 
-	return
 }

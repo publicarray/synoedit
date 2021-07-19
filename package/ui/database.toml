@@ -69,13 +69,23 @@ files = [
 
 [app."syncthing"]
 files = [
-    "options.conf",
-    "config.xml"
+    "options.conf", # still need permissions to r+w
+    "config.xml" # still need permissions to r+w
 ]
 
 [app."i2pd"]
 files = [
     "i2pd.conf"
+]
+
+[app."homeassistant"]
+files = [
+    "config/automations.yaml",
+    "config/configuration.yaml",
+    "config/groups.yaml",
+    "config/scenes.yaml",
+    "config/scripts.yaml",
+    "config/secrets.yaml"
 ]
 
 ##########################
@@ -169,15 +179,21 @@ files = [
 #     "squidguardmgr.conf",
 # ]
 
-# [app."umurmur"]
-# files = [
-#     "umurmur.conf"
-# ]
+[app."umurmur"]
+files = [
+    "umurmur.conf",
+    "umurmur.crt",
+    "umurmur.key",
+    "umurmur.log",
+]
 
-# [app."znc"]
-# files = [
-#     "znc.conf"
-# ]
+[app."znc"]
+files = [
+    "configs/znc.conf", # still need permissions to r+w
+    "configs/oidentd.conf",
+    "znc.pem", # still need permissions to r+w
+    "znc.log"
+]
 
 # [app."flexget"]
 # files = [
@@ -189,10 +205,11 @@ files = [
 #     "parameters.yml"
 # ]
 
-# [app."icecast"]
-# files = [
-#     "icecast.xml"
-# ]
+[app."icecast"]
+files = [
+    "icecast.xml",
+    "icecast.log"
+]
 
 # [app."museek-plus"]
 # files = [
@@ -201,17 +218,17 @@ files = [
 
 [app."radarr"]
 files = [
-    "config.xml"
+    ".config/Radarr/config.xml"
 ]
 
 [app."sonarr"]
 files = [
-    "config.xml"
+    ".config/Sonarr/config.xml"
 ]
 
-[app."Transmission"]
+[app."transmission"]
 files = [
-    "settings.json",
+    "settings.json", # still need permissions to r+w
     "transmission.log"
 ]
 # [app."plexpy"]

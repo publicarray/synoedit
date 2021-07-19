@@ -104,7 +104,7 @@ func ConfigLoad(configFile *string) error {
 	}
 	undecoded := md.Undecoded()
 	if len(undecoded) > 0 {
-		return fmt.Errorf("Unsupported key in configuration file: [%s]", undecoded[0])
+		return fmt.Errorf("unsupported key in configuration file: [%s]", undecoded[0])
 	}
 	return nil
 }

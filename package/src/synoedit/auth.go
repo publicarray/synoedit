@@ -41,10 +41,7 @@ type AuthJSON struct {
 // Detect if the rune (character) contains '{' and therefore is likely to contain JSON
 // returns bool
 func findJSON(r rune) bool {
-	if r == '{' {
-		return false
-	}
-	return true
+	return r != '{'
 }
 
 // Check if the logged in user is Authorised or Admin.

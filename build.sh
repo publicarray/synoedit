@@ -111,10 +111,10 @@ dependencies() {
 
 checksum_database(){
     sha256sum="$(shell command -v sha256sum 2>/dev/null || command -v gsha256sum 2>/dev/null)"
-    checksum=$(sha256sum package/ui/database.toml | awk '{print $1}')
+    checksum=$($sha256sum package/ui/database.toml | awk '{print $1}')
     if ! grep -q "$checksum" package/src/synoedit/main.go; then
         echo "Checksum mismatch!"
-        sha256sum package/ui/database.toml
+        $sha256sum package/ui/database.toml
         grep 'DefaultDatabaseSHA256Checksum =' package/src/synoedit/main.go
         exit 1
     fi
@@ -195,7 +195,7 @@ compress() { # not recommended, slows down launch time ~0.8s
         upx package/ui/index.cgi
         # upx --brute package/ui/index.cgi # slow
     else
-        echo "upx not found. This option requires upx. 'brew insall upx'" >&2
+        echo "upx not found. This option requires upx. 'brew install upx'" >&2
         exit 1
     fi
 }

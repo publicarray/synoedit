@@ -103,6 +103,9 @@ func GetFilePath(appName string, fileName string) string {
 
 				if app.Directory == "" {
 					ver := GetOSVersion()
+					if appName == "sonarr" {
+						appName = "nzbdrone"
+					}
 					if ver.Major >= 7 {
 						return "/var/packages/" + appName + "/var/" + fileName
 					} else {
