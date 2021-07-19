@@ -46,7 +46,7 @@ usage() {
     echo "  compress                                        compresses compiled binary with upx"
     echo "  update                                          update dependencies with yarn or npm"
     echo "  dependencies                                    installs npm and go dependencies (yarn/npm and dep)"
-    echo "  all                                             compiles go project for all architectures and DSM6/7 versions"
+    echo "  all                                             compile and package for all architectures and DSM6/7 versions"
     echo "  compile [arch]                                  compile go project: e.g. compile amd64"
     echo "  package [arch] [syno_arch] [min_dsm_version]    create spk e.g. package amd64 broadwell 6.1-14715"
     echo "  dev                                             runs '_cp', 'compile' and 'package' commands using the native platform"
@@ -320,6 +320,7 @@ elif [ "$CMD" = "lint" ]; then
 elif [ "$CMD" = "test" ]; then
     test
 elif [ "$CMD" = "amd64" ]; then
+    dependencies
     _cp
     checksum_database_fix
     compile amd64

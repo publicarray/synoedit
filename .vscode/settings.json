@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
+        "GOARCH",
+        "GOARM",
+        "PKGVAR",
+        "SYNO",
+        "SYNOPKG",
+        "Syno",
+        "Synology's",
         "aarch",
         "apollolake",
         "armadaxp",
@@ -16,8 +23,6 @@
         "dnscrypt",
         "dockerx",
         "evansport",
-        "GOARCH",
-        "GOARM",
         "godoc",
         "gofmt",
         "golint",
@@ -31,10 +36,7 @@
         "northstarplus",
         "powerpc",
         "qoriq",
-        "Syno",
-        "SYNO",
         "synocommunity",
-        "synoedit",
-        "Synology's"
+        "synoedit"
     ]
 }

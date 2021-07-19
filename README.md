@@ -14,7 +14,21 @@ Synology package for editing files through a web interface
 git clone https://github.com/publicarray/synoedit && cd synoedit
 ./build all # builds all available versions/architectures
 ./build amd64 # alias to build amd64 architecture only for both DSM6 and DSM7 (good for development)
-./build help # see all options
+./build help
+Usage:  ./build.sh command
+
+Commands:
+  compress                                        compresses compiled binary with upx
+  update                                          update dependencies with yarn or npm
+  dependencies                                    installs npm and go dependencies (yarn/npm and dep)
+  all                                             compile and package for all architectures and DSM6/7 versions
+  compile [arch]                                  compile go project: e.g. compile amd64
+  package [arch] [syno_arch] [min_dsm_version]    create spk e.g. package amd64 broadwell 6.1-14715
+  dev                                             runs '_cp', 'compile' and 'package' commands using the native platform
+  clean|clear                                     remove all *spk files
+  lint                                            lint code
+  test                                            run a simple test
+  amd64                                           alias to compile and package for amd64 only, good for quick development
 ```
 
 ## Build manually
@@ -39,16 +53,15 @@ env SERVER_PROTOCOL=HTTP/1.1 REQUEST_METHOD=GET ./index.cgi --dev > test.html
 
     ```json
     {
-    "defaults": {
-        "run-as": "package"
-    },
-    "username": "<your-package-name>",
-    "groupname": "synocommunity"
+        "defaults": {
+            "run-as": "package"
+        },
+        "groupname": "synocommunity"
     }
     ```
 
 2. In the `postinstall` script add group read and write permissions for the files you want to add support for
 
-```sh
-chmod g+rw -R "$SYNOPKG_PKGVAR"
-```
+    ```sh
+    chmod g+rw -R "$SYNOPKG_PKGVAR"
+    ```
