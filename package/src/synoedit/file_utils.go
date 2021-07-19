@@ -49,34 +49,85 @@ func ReadFile(file string) string {
 	return ""
 }
 
+func mkdir(path string) {
+	stat, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			if err := os.Mkdir(path, 0755); err != nil {
+				logError(err.Error())
+			}
+			return
+		}
+		logError(err.Error())
+	}
+
+	if !stat.IsDir() {
+		logError("Can't create folder: " + path + "exists and is not a folder")
+	}
+
+}
+
 // SaveFile saves the file content (data) to file
 func SaveFile(file string, data string) {
+	// https://github.com/natefinch/atomic/blob/master/atomic.go
 	// If file exists get file info struct
-	// fInfo, err := os.Stat(file)
+	fInfo, err := os.Stat(file)
+	if err != nil {
+		logError(err.Error())
+	}
+
+	ver := GetOSVersion()
+	path := "/var/packages/synoedit/target/tmp"
+	if ver.Major >= 7 {
+		path = "/var/packages/synoedit/tmp"
+	}
+
+	// Create file
+	mkdir(path)
+	tmpFile, err := ioutil.TempFile(path, "*.txt")
+	if err != nil {
+		logError("Cannot create temporary file", err.Error())
+	}
+	defer os.Remove(tmpFile.Name())
+	defer tmpFile.Close()
+
+	// f, err := os.Create(os.TempDir()/".tmp")
 	// if err != nil {
 	// 	logError(err.Error())
 	// }
+	// defer f.Close()
+	if _, err = tmpFile.WriteString(data); err != nil {
+		logError(err.Error())
+	}
 
+	if err := tmpFile.Sync(); err != nil {
+		logError("can't flush file", err.Error())
+	}
+
+	// set owner and group id
 	// Get stat structure (for uid and gid)
 	// stat := fInfo.Sys().(*syscall.Stat_t)
+	// if err := tmpFile.Chown(int(stat.Uid), int(stat.Gid)); err != nil {
+	// 	logError(err.Error())
+	// }
 
-	// Create file
-	f, err := os.Create(file + ".tmp")
-	if err != nil {
+	// Close the file
+	if err := tmpFile.Close(); err != nil {
 		logError(err.Error())
 	}
-	defer f.Close()
-	_, err = f.WriteString(data)
-	if err != nil {
-		logError(err.Error())
-	}
+
 	// set owner and group id
-	// f.Chown(int(stat.Uid), int(stat.Gid))
-	f.Sync()
+	// if err := os.Chown(tmpFile.Name(), int(stat.Uid), int(stat.Gid)); err != nil {
+	// 	logError(err.Error())
+	// }
 
-	err = os.Rename(file+".tmp", file) // atomic
-	if err != nil {
+	// if err := os.Chmod(tmpFile.Name(), 0664); err != nil {
+	if err := os.Chmod(tmpFile.Name(), fInfo.Mode()); err != nil {
 		logError(err.Error())
 	}
 
+	// atomic move
+	if err = os.Rename(tmpFile.Name(), file); err != nil {
+		logError(err.Error())
+	}
 }
