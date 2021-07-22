@@ -13,8 +13,8 @@
 files = [
     'dnscrypt-proxy.toml',
     'dnscrypt-proxy.log',
-    'blocklist-names.txt',
-    'blocklist-ips.txt',
+    'blocked-names.txt',
+    'blocked-ips.txt',
     'cloaking-rules.txt',
     'forwarding-rules.txt',
     'allowed-names.txt',
@@ -35,9 +35,8 @@ files = [
     exec = "python"
     # Arguments
     args = ["generate-domains-blocklist.py"]
-    # Directory to change to before running the command
     # A file where the output is saved to. Must be a file from the previously set "files" option
-    out-file = "blocklist.txt"
+    out-file = "blocked-names.txt"
 # [app."dnscrypt-proxy".action]
 #     button_label = "Check config file"
 #     exec = "/var/packages/dnscrypt-proxy/target/bin/dnscrypt-proxy"
