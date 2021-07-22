@@ -63,7 +63,7 @@
     overflow-x: auto;
     overflow-y: auto;
     height: 80%;
-    height: calc(100% - 60px);
+    height: calc(100% - 45px);
 }
 
 .synoedit .close {
