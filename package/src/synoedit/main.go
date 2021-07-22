@@ -30,7 +30,7 @@ import (
 
 const (
 	// AppVersion is the Program Version
-	AppVersion = "0.0.7"
+	AppVersion = "0.0.8"
 	// DefaultDatabaseFileName is the main file name for database
 	DefaultDatabaseFileName = "database.toml"
 	// DefaultLayoutFileName is the html template for the http repose
