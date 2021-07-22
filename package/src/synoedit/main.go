@@ -131,7 +131,7 @@ func main() {
 			output := ExecuteAction(appName)
 
 			if ajax == "true" {
-				jsonMessage(0, false, output)
+				jsonMessage(0, output)
 			}
 			renderHTML(layoutFile, fileData, "Not implemented", "")
 		}
@@ -141,7 +141,7 @@ func main() {
 			SaveFile(filePath, fileData)
 
 			if ajax == "true" {
-				jsonMessage(0, false, "File saved successfully!")
+				jsonMessage(0, "File saved successfully!")
 			}
 			renderHTML(layoutFile, fileData, "File saved successfully!", "") // not complete
 		}
@@ -155,7 +155,7 @@ func main() {
 
 		if ajax == "true" {
 			// expect an ajax response
-			jsonMessage(0, false, fileData)
+			jsonMessage(0, fileData)
 		}
 		// else respond with full html
 		renderHTML(layoutFile, fileData, "", "") // not complete

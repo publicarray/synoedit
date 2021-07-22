@@ -124,10 +124,7 @@ function ajax(method, data, successFunc, handlerFunc) {
         if (request.status == 200) {
             debug('ajax response', request)
             response = JSON.parse(request.responseText)
-            if (response.model === true) {
-                displayModel(response.message, response.status)
-            }
-            else if (response.status === 0) { // success
+            if (response.status === 0) { // success
                 successFunc(response.message, response)
             } else if (response.status === 1) { // error
                 console.error('ajax', response)
