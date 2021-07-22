@@ -91,6 +91,10 @@ function hideModel() {
 }
 
 function displayError(message) {
+    // Also display message in model if text is long
+    if (message.length > 64) {
+        displayModel(message, 1)
+    }
     messageText.style.animation = 'none'
     messageText.classList.remove('success')
     messageText.classList.add('error')
@@ -100,6 +104,10 @@ function displayError(message) {
 }
 
 function displaySuccess(message) {
+    // Also display message in model if text is long
+    if (message.length > 64) {
+        displayModel(message, 0)
+    }
     // Restart Animation
     messageText.style.animation = 'none'
     messageText.classList.remove('error')
