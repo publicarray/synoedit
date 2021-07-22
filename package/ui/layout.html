@@ -10,8 +10,12 @@
         <div class="message">
             <p class="messageText error">{{.ErrorMessage}}</p>
         </div>
+        <div class="model shadow">
+            <pre class="modelText"></pre>
+            <button class="close btn" onclick="hideModel()">Close</button>
+        </div>
         <div class="spinner">
-            <div class="centerBox">
+            <div class="centerBox shadow">
                 <span class="animation">
                     <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                         <rect x="0" y="0" width="40" height="40" fill="#C8D2DD" shape-rendering="crispEdges">

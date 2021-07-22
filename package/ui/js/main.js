@@ -1,5 +1,7 @@
 var textArea = document.querySelector('.synoedit .fileContent textarea')
 var spinner = document.querySelector('.synoedit .spinner')
+var model = document.querySelector('.synoedit .model')
+var modelText = document.querySelector('.synoedit .modelText')
 var messageText = document.querySelector('.synoedit .messageText')
 var actionForm = document.querySelector('.synoedit .action')
 var actionBtn = document.querySelector('.synoedit .action .btn')
@@ -12,11 +14,11 @@ if (typeof CodeMirror === "undefined") {
     textArea.style.opacity = 1
 } else {
     CodeMirror.modeURL = "codemirror/mode/%N/%N.js";
-    CodeMirror.commands.save = function(insance) { // overload save function
-        debug("CodeMirror save event", insance)
-        insance.save()
+    CodeMirror.commands.save = function(instance) { // overload save function
+        debug("CodeMirror save event", instance)
+        instance.save()
         var param = addParameter('app', appSelector.value) + addParameter('file', fileSelector.value) + addParameter('ajax', 'true')
-        ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() { // insance.getTextArea().value
+        ajax('POST', 'fileContent='+encodeURIComponent(textArea.value) + param, function() { // instance.getTextArea().value
             displaySuccess('Saved changes!')
         })
     }
@@ -75,6 +77,19 @@ function addParameter(key, value) {
     return '&' + key + '=' + value
 }
 
+function displayModel(message, status) {
+    model.style.display = 'block'
+    if (status === 1) {
+        model.style.color = '#f00'
+    } else {
+        model.style.color = '#000'
+    }
+    modelText.innerText = message
+}
+function hideModel() {
+    model.style.display = 'none'
+}
+
 function displayError(message) {
     messageText.style.animation = 'none'
     messageText.classList.remove('success')
@@ -101,7 +116,10 @@ function ajax(method, data, successFunc, handlerFunc) {
         if (request.status == 200) {
             debug('ajax response', request)
             response = JSON.parse(request.responseText)
-            if (response.status === 0) { // success
+            if (response.model === true) {
+                displayModel(response.message, response.status)
+            }
+            else if (response.status === 0) { // success
                 successFunc(response.message, response)
             } else if (response.status === 1) { // error
                 console.error('ajax', response)

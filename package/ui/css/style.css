@@ -15,6 +15,12 @@
     visibility: hidden;
 }
 
+.synoedit .shadow {
+    box-shadow: 0 1px 4px #bbb;
+    border-radius: 2px;
+    border:1px solid #c8d2dc;
+}
+
 .synoedit .spinner .centerBox {
     position: absolute;
     width: 300px;
@@ -23,9 +29,6 @@
     left: 50%;
     margin: -32px 0 0 -150px;
     background: #fff;
-    box-shadow: 0 1px 4px #bbb;
-    border-radius: 2px;
-    border:1px solid #c8d2dc;
 }
 .synoedit .animation {
     position: absolute;
@@ -42,6 +45,29 @@
     color: #666;
 }
 
+
+.synoedit .model {
+    background: #fff;
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 50%;
+    margin: -150px 0 0 -300px;
+    height: 300px;
+    width: 600px;
+    z-index: 10;
+}
+
+.synoedit .modelText {
+    overflow-x: auto;
+    height: 80%;
+}
+
+.synoedit .close {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
 
 .synoedit .message {
     position: fixed;

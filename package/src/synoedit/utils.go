@@ -156,7 +156,7 @@ func ExecuteAction(appName string) string {
 		cmd.Stderr = &stderr
 		stdout, err := cmd.Output()
 		if err != nil {
-			logError(string(stdout) + err.Error())
+			logModel(string(stdout) + stderr.String() + err.Error())
 		}
 		if len(app.Action.OutputFile) > 0 {
 			filePath := GetFilePath(appName, app.Action.OutputFile)

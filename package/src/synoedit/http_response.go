@@ -40,6 +40,7 @@ type JSONResponse struct {
 	// 0 ok, 1 Error
 	Status  int    `json:"status"`
 	Message string `json:"message"`
+	Model   bool   `json:"model"`
 }
 
 // NewHTTPResponse generates a http/1.1 response
@@ -64,7 +65,12 @@ func (HTTPResponse *HTTPResponse) print(str ...string) {
 
 // Exit program with a HTTP Internal Error status code and a message (dump and die)
 func logError(str ...string) {
-	jsonMessage(1, strings.Join(str, " "))
+	jsonMessage(1, false, strings.Join(str, " "))
+}
+
+// Exit program with a HTTP Internal Error status code and a model message (dump and die)
+func logModel(str ...string) {
+	jsonMessage(1, true, strings.Join(str, " "))
 }
 
 // Exit program with a HTTP Unauthorized status code and a message (dump and die)
@@ -98,14 +104,16 @@ func okHTML(str ...string) {
  * Send a JSON object as HTTP/1.1 in stdout
  * @param  int status       The status code, 0=success 1=error
  * @param  strings message  The message to send
+ * @param  bool model       If the message is shown as a model
  */
-func jsonMessage(status int, message ...string) {
+func jsonMessage(status int, model bool, message ...string) {
 	okJSONRes := NewHTTPResponse(200, "OK")
 	// RSM 1.2 Doesn't allow 'application/json' Content-Type to pass through!
 	// okJsonRes.ContentType = "application/json;\r\n"
 	jsonObj := &JSONResponse{
 		Status:  status,
 		Message: strings.Join(message, " "),
+		Model:   model,
 	}
 	jsonBytes, err := json.Marshal(jsonObj)
 	if err != nil {
