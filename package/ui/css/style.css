@@ -50,18 +50,20 @@
     background: #fff;
     position: absolute;
     display: none;
-    top: 50%;
-    left: 50%;
-    margin: -150px 0 0 -300px;
-    height: 300px;
-    width: 600px;
+    top: 10%;
+    left: 10%;
+    bottom: 10%;
+    right: 10%;
     z-index: 10;
-    padding: 10px;
+    padding: 3px;
 }
 
 .synoedit .modelText {
+    margin: 0;
     overflow-x: auto;
+    overflow-y: auto;
     height: 80%;
+    height: calc(100% - 60px);
 }
 
 .synoedit .close {
