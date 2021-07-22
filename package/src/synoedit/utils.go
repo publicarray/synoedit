@@ -162,7 +162,7 @@ func ExecuteAction(appName string) string {
 			filePath := GetFilePath(appName, app.Action.OutputFile)
 			SaveFile(filePath, string(stdout))
 		}
-		return string(stdout) + stderr.String()
+		return stderr.String()
 	}
 	logError("App not found in configuration!")
 	return ""

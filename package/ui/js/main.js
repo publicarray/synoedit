@@ -79,12 +79,12 @@ function addParameter(key, value) {
 
 function displayModel(message, status) {
     model.style.display = 'block'
+    modelText.innerText = message
     if (status === 1) {
         model.style.color = '#f00'
     } else {
         model.style.color = '#000'
     }
-    modelText.innerText = message
 }
 function hideModel() {
     model.style.display = 'none'
@@ -229,12 +229,19 @@ actionForm.addEventListener('submit', function(e) {
     var param = addParameter('app', appSelector.value) + addParameter('ajax', 'true')
     debug('params', param)
     ajax('POST', 'action=true' + param, function (responseText) {
+        displaySuccess('Done!')
+        if (responseText.length > 0) {
+            displayModel(responseText, 0)
+        }
+
         // Update editor content if viewing the file currently being modified
         var modifiedFile = configFiles[appSelector.value].Action.OutputFile
         if (modifiedFile !== '' && fileSelector.value == modifiedFile) {
-            updateEditorContent(responseText)
+            var param = addParameter('app', appSelector.value) + addParameter('file', modifiedFile)
+            ajax('GET', param, function(responseText) {
+                updateEditorContent(responseText)
+            })
         }
-        displaySuccess('Done!')
     })
 }, false)
 
